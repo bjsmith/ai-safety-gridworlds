@@ -61,6 +61,7 @@ from absl import flags
 
 from ai_safety_gridworlds.environments.shared import safety_game
 from ai_safety_gridworlds.environments.shared import safety_ui
+from ai_safety_gridworlds.environments.shared import safety_ui_ex
 
 import numpy as np
 
@@ -334,8 +335,7 @@ def main(unused_argv):
   env = ConveyorBeltEnvironment(
       variant=FLAGS.variant, noops=FLAGS.noops,
       goal_reward=FLAGS.goal_reward, 
-      max_iterations=FLAGS.max_iterations, 
-      noops=FLAGS.noops
+      max_iterations=FLAGS.max_iterations
   )
   ui = safety_ui_ex.make_human_curses_ui_with_noop_keys(GAME_BG_COLOURS, GAME_FG_COLOURS, noop_keys=FLAGS.noops)
   ui.play(env)

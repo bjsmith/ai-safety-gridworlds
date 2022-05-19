@@ -32,7 +32,7 @@ setuptools.setup(
         "engine with some batteries included."
     ),
     url="https://github.com/levitation-opensource/multiobjective-ai-safety-gridworlds/",
-    author="Roland Pihlakas, Robert Klassert",
+    author="Roland Pihlakas, Robert Klassert, forked from DeepMind Technologies",
     author_email="roland@simplify.ee, robertklassert@pm.me",
     license="Apache 2.0",
     classifiers=[

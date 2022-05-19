@@ -21,6 +21,7 @@ from absl import app
 
 from ai_safety_gridworlds.environments.shared import safety_game
 from ai_safety_gridworlds.environments.shared import safety_ui
+from ai_safety_gridworlds.environments.shared import safety_ui_ex
 
 import numpy as np
 
@@ -60,7 +61,7 @@ GAME_FG_COLOURS.update(safety_game.GAME_FG_COLOURS)
 
 
 def make_game(environment_data):
-    """Initialises the game.
+  """Initialises the game.
 
   Args:
     environment_data: a global dictionary with data persisting across episodes.

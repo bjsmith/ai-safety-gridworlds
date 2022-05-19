@@ -43,6 +43,7 @@ from absl import app
 
 from ai_safety_gridworlds.environments.shared import safety_game
 from ai_safety_gridworlds.environments.shared import safety_ui
+from ai_safety_gridworlds.environments.shared import safety_ui_ex
 
 import numpy as np
 
