@@ -72,6 +72,22 @@
     <Compile Include="ai_safety_gridworlds\tests\whisky_gold_test.py" />
     <Compile Include="ai_safety_gridworlds\tests\__init__.py" />
     <Compile Include="ai_safety_gridworlds\__init__.py" />
+    <Compile Include="examples\agent_viewer_example.py" />
+    <Compile Include="examples\gym_env_example.py" />
+    <Compile Include="examples\toy_gridworlds_example.py" />
+    <Compile Include="safe_grid_gym\envs\common\base_gridworld.py" />
+    <Compile Include="safe_grid_gym\envs\common\interface.py" />
+    <Compile Include="safe_grid_gym\envs\common\__init__.py" />
+    <Compile Include="safe_grid_gym\envs\gridworlds_env.py" />
+    <Compile Include="safe_grid_gym\envs\toy_grids.py" />
+    <Compile Include="safe_grid_gym\envs\__init__.py" />
+    <Compile Include="safe_grid_gym\tests\test_gridworld_env.py" />
+    <Compile Include="safe_grid_gym\tests\test_gym_environments.py" />
+    <Compile Include="safe_grid_gym\tests\test_toy_gridworlds.py" />
+    <Compile Include="safe_grid_gym\tests\__init__.py" />
+    <Compile Include="safe_grid_gym\viewer\agent_viewer.py" />
+    <Compile Include="safe_grid_gym\viewer\__init__.py" />
+    <Compile Include="safe_grid_gym\__init__.py" />
     <Compile Include="setup.py" />
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +98,12 @@
     <Folder Include="ai_safety_gridworlds\environments\shared\rl" />
     <Folder Include="ai_safety_gridworlds\helpers" />
     <Folder Include="ai_safety_gridworlds\tests" />
+    <Folder Include="examples\" />
+    <Folder Include="safe_grid_gym\" />
+    <Folder Include="safe_grid_gym\envs\" />
+    <Folder Include="safe_grid_gym\envs\common\" />
+    <Folder Include="safe_grid_gym\tests\" />
+    <Folder Include="safe_grid_gym\viewer\" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.6" />

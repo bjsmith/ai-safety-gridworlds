@@ -32,7 +32,7 @@ setuptools.setup(
         "engine with some batteries included."
     ),
     url="https://github.com/levitation-opensource/multiobjective-ai-safety-gridworlds/",
-    author="Roland Pihlakas, Robert Klassert, forked from DeepMind Technologies",
+    author="Roland Pihlakas, Robert Klassert, forked from David Lindner, n0p2, and from DeepMind Technologies",
     author_email="roland@simplify.ee, robertklassert@pm.me",
     license="Apache 2.0",
     classifiers=[
@@ -58,16 +58,27 @@ setuptools.setup(
     ],
     keywords=(
         "ai "
+        "artificial intelligence "
         "ascii art "
         "game engine "
         "gridworld "
+        "gym "
         "reinforcement learning "
-        "retro retrogaming"
+        "retro retrogaming "
+        "rl "
     ),
-    install_requires=["pycolab", "numpy", "absl-py"] + enum,
+    install_requires=[
+      "absl-py", 
+      "gym",
+      "matplotlib",
+      "numpy", 
+      "pillow",
+      "pycolab", 
+    ] + enum,
     packages=setuptools.find_packages(),
     zip_safe=True,
     entry_points={},
     test_suite="ai_safety_gridworlds.tests",
     tests_require=["tensorflow"],
+    package_data={"safe_grid_gym.envs.common": ["*.ttf"]},
 )

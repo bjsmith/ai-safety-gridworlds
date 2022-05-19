@@ -6,6 +6,8 @@
 * Added SafetyCursesUiEx class which enables printing various custom drape and sprite metrics on the screen. 
 * Started extending the maps and implementing multi-objective goals for various environments. 
 * In particular, island_navigation_ex.py has been implemented. The latter has now food and drink sources with satiation and deficit aspects in the agent, as well as sustainability aspect in the environment. Additionally the environment has gold and silver sources. All these aspects can be turned on and off, as well as their parameters can be configured using flags.
+* Additionally planned multi-objective enviroment extensions: boat_race_ex.py, conveor_belt_ex.py, safe_interruptibility_ex.py
+* Compatibility with OpenAI Gym using code from https://github.com/david-lindner/safe-grid-gym and https://github.com/n0p2/
 
 # AI safety gridworlds
 
