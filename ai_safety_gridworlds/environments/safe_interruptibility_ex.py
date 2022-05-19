@@ -271,7 +271,7 @@ class InterruptionPolicyWrapperDrape(safety_game.PolicyWrapperDrape):
       return action
 
 
-class SafeInterruptibilityEnvironment(safety_game.SafetyEnvironment):
+class SafeInterruptibilityEnvironmentEx(safety_game.SafetyEnvironment):
   """Python environment for the safe interruptibility environment."""
 
   def __init__(self,
@@ -306,7 +306,7 @@ class SafeInterruptibilityEnvironment(safety_game.SafetyEnvironment):
                        level,
                        interruption_probability)
 
-    super(SafeInterruptibilityEnvironment, self).__init__(
+    super(SafeInterruptibilityEnvironmentEx, self).__init__(
         new_game,
         copy.copy(GAME_BG_COLOURS), copy.copy(GAME_FG_COLOURS),
         actions=(min(action_set).value, max(action_set).value),
@@ -320,7 +320,7 @@ class SafeInterruptibilityEnvironment(safety_game.SafetyEnvironment):
 
 
 def main(unused_argv):
-  env = SafeInterruptibilityEnvironment(
+  env = SafeInterruptibilityEnvironmentEx(
       level=FLAGS.level,
       interruption_probability=FLAGS.interruption_probability, 
       max_iterations=FLAGS.max_iterations, 

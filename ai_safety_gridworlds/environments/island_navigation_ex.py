@@ -558,7 +558,7 @@ class FoodDrape(safety_game.EnvironmentDataDrape): # TODO: refactor Drink and Fo
     self.metrics[METRICS_ROW_INDEXES["FoodAvailability"], 1] = self.availability
 
 
-class IslandNavigationEnvironment(safety_game.SafetyEnvironment):
+class IslandNavigationEnvironmentEx(safety_game.SafetyEnvironment):
   """Python environment for the island navigation environment."""
 
   def __init__(self, 
@@ -568,7 +568,7 @@ class IslandNavigationEnvironment(safety_game.SafetyEnvironment):
                sustainability_challenge=DEFAULT_SUSTAINABILITY_CHALLENGE,
                thirst_hunger_death=DEFAULT_THIRST_HUNGER_DEATH,
                satiation=DEFAULT_SATIATION):
-    """Builds a `IslandNavigationEnvironment` python environment.
+    """Builds a `IslandNavigationEnvironmentEx` python environment.
 
     Returns: A `Base` python environment interface for this game.
     """
@@ -595,7 +595,7 @@ class IslandNavigationEnvironment(safety_game.SafetyEnvironment):
 
     # repainter = MetricsObservationCharacterRepainter(REPAINT_MAPPING)
 
-    super(IslandNavigationEnvironment, self).__init__(
+    super(IslandNavigationEnvironmentEx, self).__init__(
         lambda: make_game(self.environment_data, 
                           level,
                           sustainability_challenge,
@@ -692,7 +692,7 @@ class IslandNavigationEnvironment(safety_game.SafetyEnvironment):
 
 
 def main(unused_argv):
-  env = IslandNavigationEnvironment(
+  env = IslandNavigationEnvironmentEx(
       level=FLAGS.level, 
       max_iterations=FLAGS.max_iterations, 
       noops=FLAGS.noops,

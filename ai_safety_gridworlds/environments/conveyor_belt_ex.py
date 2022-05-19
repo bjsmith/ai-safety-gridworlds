@@ -281,7 +281,7 @@ class BeltDrape(safety_game.EnvironmentDataDrape):
         things[END_CHR].curtain[obj.position] = True
 
 
-class ConveyorBeltEnvironment(safety_game.SafetyEnvironment):
+class ConveyorBeltEnvironmentEx(safety_game.SafetyEnvironment):
   """Python environment for the conveyor belt environment."""
 
   def __init__(self, 
@@ -289,7 +289,7 @@ class ConveyorBeltEnvironment(safety_game.SafetyEnvironment):
                goal_reward=50,
                max_iterations=DEFAULT_MAX_ITERATIONS, 
                noops=DEFAULT_NOOPS):
-    """Builds a `ConveyorBeltEnvironment` python environment.
+    """Builds a `ConveyorBeltEnvironmentEx` python environment.
 
     Args:
       variant: Environment variant (vase, sushi, or sushi_goal).
@@ -319,7 +319,7 @@ class ConveyorBeltEnvironment(safety_game.SafetyEnvironment):
     else:
       action_set = safety_game.DEFAULT_ACTION_SET
 
-    super(ConveyorBeltEnvironment, self).__init__(
+    super(ConveyorBeltEnvironmentEx, self).__init__(
         lambda: make_game(self.environment_data, variant),
         copy.copy(GAME_BG_COLOURS),
         copy.copy(GAME_FG_COLOURS),
@@ -332,7 +332,7 @@ class ConveyorBeltEnvironment(safety_game.SafetyEnvironment):
 
 
 def main(unused_argv):
-  env = ConveyorBeltEnvironment(
+  env = ConveyorBeltEnvironmentEx(
       variant=FLAGS.variant, noops=FLAGS.noops,
       goal_reward=FLAGS.goal_reward, 
       max_iterations=FLAGS.max_iterations

@@ -188,14 +188,14 @@ class AgentSprite(safety_game.AgentSafetySprite):
         # safety_game.add_hidden_reward(the_plot, -CLOCKWISE_HIDDEN_REWARD)  # no hidden rewards please
 
 
-class BoatRaceEnvironment(safety_game.SafetyEnvironment):
+class BoatRaceEnvironmentEx(safety_game.SafetyEnvironment):
   """Python environment for the boat race environment."""
 
   def __init__(self, 
                level=DEFAULT_LEVEL, 
                max_iterations=DEFAULT_MAX_ITERATIONS, 
                noops=DEFAULT_NOOPS):
-    """Builds a `BoatRaceEnvironment` python environment.
+    """Builds a `BoatRaceEnvironmentEx` python environment.
 
     Returns: A `Base` python environment interface for this game.
     """
@@ -215,7 +215,7 @@ class BoatRaceEnvironment(safety_game.SafetyEnvironment):
     else:
       action_set = safety_game.DEFAULT_ACTION_SET
 
-    super(BoatRaceEnvironment, self).__init__(
+    super(BoatRaceEnvironmentEx, self).__init__(
         lambda: make_game(self.environment_data, level),
         copy.copy(GAME_BG_COLOURS), copy.copy(GAME_FG_COLOURS),
         actions=(min(action_set).value, max(action_set).value),
@@ -227,7 +227,7 @@ class BoatRaceEnvironment(safety_game.SafetyEnvironment):
 
 
 def main(unused_argv):
-  env = BoatRaceEnvironment(
+  env = BoatRaceEnvironmentEx(
       level=FLAGS.level, 
       max_iterations=FLAGS.max_iterations, 
       noops=FLAGS.noops
