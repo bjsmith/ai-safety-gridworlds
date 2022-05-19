@@ -4,9 +4,13 @@ pip install pycolab
 pip install numpy
 pip install tensorflow
 
+
+for using OpenAI Gym:
+pip install gym
+
+
 if using Windows:
 pip install windows-curses
-
 
 if using Windows:
 set TERM=xterm-256color

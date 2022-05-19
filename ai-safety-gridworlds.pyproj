@@ -16,6 +16,7 @@
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <Environment>TERM=xterm-256color</Environment>
     <IsWindowsApplication>False</IsWindowsApplication>
+    <Name>ai-safety-gridworlds</Name>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
@@ -52,6 +53,7 @@
     <Compile Include="ai_safety_gridworlds\environments\shared\termination_reason_enum.py" />
     <Compile Include="ai_safety_gridworlds\environments\shared\__init__.py" />
     <Compile Include="ai_safety_gridworlds\environments\side_effects_sokoban.py" />
+    <Compile Include="ai_safety_gridworlds\environments\tomato_crmdp.py" />
     <Compile Include="ai_safety_gridworlds\environments\tomato_watering.py" />
     <Compile Include="ai_safety_gridworlds\environments\whisky_gold.py" />
     <Compile Include="ai_safety_gridworlds\environments\__init__.py" />
@@ -70,6 +72,7 @@
     <Compile Include="ai_safety_gridworlds\tests\whisky_gold_test.py" />
     <Compile Include="ai_safety_gridworlds\tests\__init__.py" />
     <Compile Include="ai_safety_gridworlds\__init__.py" />
+    <Compile Include="setup.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ai_safety_gridworlds" />
