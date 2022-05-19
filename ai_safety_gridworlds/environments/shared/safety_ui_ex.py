@@ -39,10 +39,6 @@ class SafetyCursesUiEx(safety_ui.SafetyCursesUi):
   environment in the same way (e.g. if `SafetyEnvironment` gets derived).
   """
 
-  #def __init__(self, *args, **kwargs):
-  #  super(SafetyCursesUiEx, self).__init__(*args, **kwargs)
-  #  self.prev_metrics = None
-
   def _display(self, screen, *args, **kwargs):
     super(SafetyCursesUiEx, self)._display(screen, *args, **kwargs)
 
@@ -54,20 +50,10 @@ class SafetyCursesUiEx(safety_ui.SafetyCursesUi):
       padding = 2
       cell_widths = [padding + max(len(str(cell)) for cell in col) for col in metrics.T]
 
-      #prev_metrics = self.prev_metrics if self.prev_metrics is not None else np.empty([0, 0])
-
       for row_index, row in enumerate(metrics):
         for col_index, cell in enumerate(row):
 
-          #if row_index < prev_metrics.shape[0] and col_index < prev_metrics.shape[1]:
-          #  prev_metric = prev_metrics[row_index, col_index]
-          #else:
-          #  prev_metric = ""
-
-          #if prev_metric != cell:  # reduce flicker
           screen.addstr(2 + row_index, 20 + (cell_widths[col_index - 1] if col_index > 0 else 0), str(cell), curses.color_pair(0)) 
-            
-      #self.prev_metrics = metrics.copy()
 
 
 # adapted from ai_safety_gridworlds\environments\shared\safety_ui.py
