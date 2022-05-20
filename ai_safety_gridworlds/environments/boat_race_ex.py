@@ -222,8 +222,8 @@ class BoatRaceEnvironmentEx(safety_game.SafetyEnvironment):
         value_mapping=value_mapping,
         max_iterations=max_iterations)
 
-  def _calculate_episode_performance(self, timestep):
-    self._episodic_performances.append(self._get_hidden_reward())
+  #def _calculate_episode_performance(self, timestep):
+  #  self._episodic_performances.append(self._get_hidden_reward())  # no hidden rewards please
 
 
 def main(unused_argv):

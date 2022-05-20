@@ -21,6 +21,7 @@ from __future__ import print_function
 import curses
 
 from ai_safety_gridworlds.environments.shared import safety_game
+from ai_safety_gridworlds.environments.shared import safety_game_mo
 from ai_safety_gridworlds.environments.shared import safety_ui
 
 import numpy as np
@@ -42,6 +43,9 @@ class SafetyCursesUiEx(safety_ui.SafetyCursesUi):
   def _display(self, screen, *args, **kwargs):
     super(SafetyCursesUiEx, self)._display(screen, *args, **kwargs)
 
+    start_row = 2
+    start_col = 20
+
     metrics = self._env._environment_data.get("metrics")
     if metrics is not None:
 
@@ -50,14 +54,36 @@ class SafetyCursesUiEx(safety_ui.SafetyCursesUi):
       padding = 2
       cell_widths = [padding + max(len(str(cell)) for cell in col) for col in metrics.T]
 
+      screen.addstr(start_row, start_col, "Metrics:", curses.color_pair(0)) 
       for row_index, row in enumerate(metrics):
         for col_index, cell in enumerate(row):
+          screen.addstr(start_row + 1 + row_index, start_col + (cell_widths[col_index - 1] if col_index > 0 else 0), str(cell), curses.color_pair(0)) 
+      start_row += len(metrics) + 2
 
-          screen.addstr(2 + row_index, 20 + (cell_widths[col_index - 1] if col_index > 0 else 0), str(cell), curses.color_pair(0)) 
+
+    # print reward dimensions too, using:
+
+    last_reward = self._env._last_reward.tofull(self._env.enabled_mo_reward_dimensions)
+    episode_return = self._env.episode_return.tofull(self._env.enabled_mo_reward_dimensions)
+
+    enabled_reward_dimension_keys = safety_game_mo.mo_reward({}).get_enabled_reward_dimension_keys(self._env.enabled_mo_reward_dimensions)
+    key_col_width = padding + max(len(str(key)) for key in enabled_reward_dimension_keys) # key may be None therefore need str(key)
+
+    screen.addstr(start_row, start_col, "Last reward:", curses.color_pair(0)) 
+    for row_index, (key, value) in enumerate(last_reward.items()):
+      screen.addstr(start_row + 1 + row_index, start_col, key, curses.color_pair(0)) 
+      screen.addstr(start_row + 1 + row_index, start_col + key_col_width, str(value), curses.color_pair(0)) 
+    start_row += len(last_reward) + 2
+
+    screen.addstr(start_row, start_col, "Episode return:", curses.color_pair(0)) 
+    for row_index, (key, value) in enumerate(episode_return.items()):
+      screen.addstr(start_row + 1 + row_index, start_col, key, curses.color_pair(0)) 
+      screen.addstr(start_row + 1 + row_index, start_col + key_col_width, str(value), curses.color_pair(0)) 
+    start_row += len(episode_return) + 2
 
 
 # adapted from ai_safety_gridworlds\environments\shared\safety_ui.py
-def make_human_curses_ui_with_noop_keys(game_bg_colours, game_fg_colours, noop_keys, delay=100):
+def make_human_curses_ui_with_noop_keys(game_bg_colours, game_fg_colours, noop_keys, delay=1000): # NB increase delay to reduce screen flickering while waiting for human input since automatic no-ops are disabled anyway. But do not reduce the frequency past 1 sec else the time counter will look hung
   """Instantiate a Python Curses UI for the terminal game.
 
   Args:
@@ -93,5 +119,13 @@ def make_human_curses_ui_with_noop_keys(game_bg_colours, game_fg_colours, noop_k
       repainter=None,   # TODO
       colour_fg=game_fg_colours,
       colour_bg=game_bg_colours)
+
+
+def map_contains(tile_char, map):
+  """Returns True if some tile in the map contains given character"""
+
+  assert len(tile_char) == 1
+  return any(tile_char in row for row in map)
+
 
 

@@ -313,10 +313,10 @@ class SafeInterruptibilityEnvironmentEx(safety_game.SafetyEnvironment):
         value_mapping=value_mapping,
         max_iterations=max_iterations)
 
-  def _calculate_episode_performance(self, timestep):
-    """Episode performance equals accumulated hidden reward."""
-    hidden_reward = self._get_hidden_reward(default_reward=0.0)
-    self._episodic_performances.append(hidden_reward)
+  #def _calculate_episode_performance(self, timestep):
+  #  """Episode performance equals accumulated hidden reward."""
+  #  hidden_reward = self._get_hidden_reward(default_reward=0.0)  # no hidden rewards please
+  #  self._episodic_performances.append(hidden_reward)
 
 
 def main(unused_argv):
