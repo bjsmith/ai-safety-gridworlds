@@ -18,19 +18,30 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import itertools
+
 # Dependency imports
+from ai_safety_gridworlds.environments.shared.rl import environment
 from ai_safety_gridworlds.environments.shared.termination_reason_enum import TerminationReason
 from ai_safety_gridworlds.environments.shared.safety_game import SafetyEnvironment, ACTUAL_ACTIONS, TERMINATION_REASON, EXTRA_OBSERVATIONS
 
 import numpy as np
 
+from pycolab import plot
 
 
-class mo_reward(object):
+class mo_reward(object):  # TODO: move to separate file
 
-  def __init__(self, reward_dimensions_dict):
+  def __init__(self, reward_dimensions_dict, immutable=True):
 
-    self.reward_dimensions_dict = reward_dimensions_dict
+    self._reward_dimensions_dict = reward_dimensions_dict
+    self._immutable = immutable
+
+
+  def copy(self):
+
+    dict_clone = dict(self._reward_dimensions_dict) # clone
+    return mo_reward(dict_clone, immutable=False)
 
 
   def get_enabled_reward_dimension_keys(self, enabled_mo_reward_dimensions):
@@ -42,30 +53,31 @@ class mo_reward(object):
     else: # if enabled_mo_reward_dimensions is not None:
 
       # each reward may contain more than one enabled dimension
-      keys_per_reward = [{ key for key, unit_value in reward.reward_dimensions_dict.items() if unit_value != 0 }
+      keys_per_reward = [{ key for key, unit_value in reward._reward_dimensions_dict.items() if unit_value != 0 }
                                                         for reward in enabled_mo_reward_dimensions]
-      enabled_reward_dimension_keys = set.union(*keys_per_reward)
-      return enabled_reward_dimension_keys
+      # enabled_reward_dimension_keys = set.union(*keys_per_reward)  # this does not preserve the order of the keys
+      enabled_reward_dimension_keys = dict.fromkeys(itertools.chain.from_iterable(keys_per_reward)).keys()  # this preserves the order of the keys
+      return list(enabled_reward_dimension_keys)
 
 
   def tolist(self, enabled_mo_reward_dimensions):
 
     if enabled_mo_reward_dimensions is None:
 
-      reward_values = self.reward_dimensions_dict.values()
+      reward_values = self._reward_dimensions_dict.values()
       return sum(reward_values)
 
     else: # if enabled_mo_reward_dimensions is not None:
 
       enabled_reward_dimension_keys = self.get_enabled_reward_dimension_keys(enabled_mo_reward_dimensions)
 
-      for key in self.reward_dimensions_dict.keys():
+      for key in self._reward_dimensions_dict.keys():
         if key not in enabled_reward_dimension_keys:
           raise ValueError("Reward %s is not enabled but is still included in mo_reward" % key)
 
       result = [0] * len(enabled_reward_dimension_keys)
       for dimension_index, enabled_reward_dimension_key in enumerate(enabled_reward_dimension_keys):
-        result[dimension_index] = self.reward_dimensions_dict.get(enabled_reward_dimension_key, 0)
+        result[dimension_index] = self._reward_dimensions_dict.get(enabled_reward_dimension_key, 0)
       return result
 
 
@@ -73,44 +85,44 @@ class mo_reward(object):
 
     if enabled_mo_reward_dimensions is None:
 
-      reward_values = self.reward_dimensions_dict.values()
+      reward_values = self._reward_dimensions_dict.values()
       return {None: sum(reward_values)}
 
     else: # if enabled_mo_reward_dimensions is not None:
 
       enabled_reward_dimension_keys = self.get_enabled_reward_dimension_keys(enabled_mo_reward_dimensions)
 
-      for key in self.reward_dimensions_dict.keys():
+      for key in self._reward_dimensions_dict.keys():
         if key not in enabled_reward_dimension_keys:
           raise ValueError("Reward %s is not enabled but is still included in mo_reward" % key)
 
       result = {}
       for enabled_reward_dimension_key in enabled_reward_dimension_keys:
-        result[enabled_reward_dimension_key] = self.reward_dimensions_dict.get(enabled_reward_dimension_key, 0)
+        result[enabled_reward_dimension_key] = self._reward_dimensions_dict.get(enabled_reward_dimension_key, 0)
       return result
 
 
   def __str__(self): # tostring
 
-    return str(self.reward_dimensions_dict)
+    return str(self._reward_dimensions_dict)
 
 
   def __repr__(self): # tostring
 
-    return "<" + repr(self.reward_dimensions_dict) + ">"
+    return "<" + repr(self._reward_dimensions_dict) + ">"
 
 
   def __add__(self, other):
 
-    result_dict = dict(reward_dimensions_dict)  # clone
+    result_dict = dict(self._reward_dimensions_dict)  # clone
 
     if np.isscalar(other):
-      return mo_reward({ key: value + other for key, value in self.reward_dimensions_dict.items() })
+      return mo_reward({ key: value + other for key, value in self._reward_dimensions_dict.items() }, immutable=False)
 
     elif isinstance(other, mo_reward):
-      for other_key, other_value in other.reward_dimensions_dict.items():
+      for other_key, other_value in other._reward_dimensions_dict.items():
         result_dict[other_key] = result_dict.get(other_key, 0) + other_value
-      return mo_reward(result_dict)
+      return mo_reward(result_dict, immutable=False)
 
     else:
       raise NotImplementedError("Unknown value type provided for mo_reward.__add__, expecting a scalar or mo_reward")
@@ -118,13 +130,16 @@ class mo_reward(object):
 
   def __iadd__(self, other):  # in-place add
 
+    if self._immutable:
+      return self.__add__(other)
+
     if np.isscalar(other):
-      for key, value in self.reward_dimensions_dict.items():
-        self.reward_dimensions_dict[key] = value + other
+      for key, value in self._reward_dimensions_dict.items():
+        self._reward_dimensions_dict[key] = value + other
 
     elif isinstance(other, mo_reward):
-      for other_key, other_value in other.reward_dimensions_dict.items():
-        self.reward_dimensions_dict[other_key] = self.reward_dimensions_dict.get(other_key, 0) + other_value
+      for other_key, other_value in other._reward_dimensions_dict.items():
+        self._reward_dimensions_dict[other_key] = self._reward_dimensions_dict.get(other_key, 0) + other_value
 
     else:
       raise NotImplementedError("Unknown value type provided for mo_reward.__iadd__, expecting a scalar or mo_reward")
@@ -139,15 +154,15 @@ class mo_reward(object):
 
   def __sub__(self, other):
 
-    result_dict = dict(reward_dimensions_dict)  # clone
+    result_dict = dict(self._reward_dimensions_dict)  # clone
 
     if np.isscalar(other):
-      return mo_reward({ key: value + other for key, value in self.reward_dimensions_dict.items() })
+      return mo_reward({ key: value + other for key, value in self._reward_dimensions_dict.items() }, immutable=False)
 
     elif isinstance(other, mo_reward):
-      for other_key, other_value in other.reward_dimensions_dict.items():
+      for other_key, other_value in other._reward_dimensions_dict.items():
         result_dict[other_key] = result_dict.get(other_key, 0) - other_value
-      return mo_reward(result_dict)
+      return mo_reward(result_dict, immutable=False)
 
     else:
       raise NotImplementedError("Unknown value type provided for mo_reward.__sub__, expecting a scalar or mo_reward")
@@ -155,13 +170,16 @@ class mo_reward(object):
 
   def __isub__(self, other):  # in-place sub
 
+    if self._immutable:
+      return self.__sub__(other)
+
     if np.isscalar(other):
-      for key, value in self.reward_dimensions_dict.items():
-        self.reward_dimensions_dict[key] = value + other
+      for key, value in self._reward_dimensions_dict.items():
+        self._reward_dimensions_dict[key] = value + other
 
     elif isinstance(other, mo_reward):
-      for other_key, other_value in other.reward_dimensions_dict.items():
-        self.reward_dimensions_dict[other_key] = self.reward_dimensions_dict.get(other_key, 0) - other_value
+      for other_key, other_value in other._reward_dimensions_dict.items():
+        self._reward_dimensions_dict[other_key] = self._reward_dimensions_dict.get(other_key, 0) - other_value
 
     else:
       raise NotImplementedError("Unknown value type provided for mo_reward.__isub__, expecting a scalar or mo_reward")
@@ -171,15 +189,15 @@ class mo_reward(object):
 
   def __rsub__(self, other):  # reflected sub (the order of operands is exchanged)
 
-    result_dict = dict(reward_dimensions_dict)  # clone
+    result_dict = dict(self._reward_dimensions_dict)  # clone
 
     if np.isscalar(other):
-      return mo_reward({ key: other - value for key, value in self.reward_dimensions_dict.items() })
+      return mo_reward({ key: other - value for key, value in self._reward_dimensions_dict.items() }, immutable=False)
 
     elif isinstance(other, mo_reward):
-      for other_key, other_value in other.reward_dimensions_dict.items():
+      for other_key, other_value in other._reward_dimensions_dict.items():
         result_dict[other_key] = other_value - result_dict.get(other_key, 0)
-      return mo_reward(result_dict)
+      return mo_reward(result_dict, immutable=False)
 
     else:
       raise NotImplementedError("Unknown value type provided for mo_reward.__rsub__, expecting a scalar or mo_reward")
@@ -190,16 +208,19 @@ class mo_reward(object):
     if not np.isscalar(other):
       raise NotImplementedError("Unknown value type provided for mo_reward.__mul__, expecting a scalar")
 
-    return mo_reward({ key: value * other for key, value in self.reward_dimensions_dict.items() })
+    return mo_reward({ key: value * other for key, value in self._reward_dimensions_dict.items() }, immutable=False)
 
 
   def __imul__(self, other):  #in-place mul
 
+    if self._immutable:
+      return self.__mul__(other)
+
     if not np.isscalar(other):
       raise NotImplementedError("Unknown value type provided for mo_reward.__imul__, expecting a scalar")
 
-    for key, value in self.reward_dimensions_dict.items():
-      self.reward_dimensions_dict[key] = value * other
+    for key, value in self._reward_dimensions_dict.items():
+      self._reward_dimensions_dict[key] = value * other
 
     return self
 
@@ -214,16 +235,19 @@ class mo_reward(object):
     if not np.isscalar(other):
       raise NotImplementedError("Unknown value type provided for mo_reward.__truediv__, expecting a scalar")
 
-    return mo_reward({ key: value / other for key, value in self.reward_dimensions_dict.items() })
+    return mo_reward({ key: value / other for key, value in self._reward_dimensions_dict.items() }, immutable=False)
 
 
   def __itruediv__(self, other):  #in-place div
 
+    if self._immutable:
+      return self.__truediv__(other)
+
     if not np.isscalar(other):
       raise NotImplementedError("Unknown value type provided for mo_reward.__itruediv__, expecting a scalar")
 
-    for key, value in self.reward_dimensions_dict.items():
-      self.reward_dimensions_dict[key] = value / other
+    for key, value in self._reward_dimensions_dict.items():
+      self._reward_dimensions_dict[key] = value / other
 
     return self
 
@@ -233,8 +257,37 @@ class mo_reward(object):
     if not np.isscalar(other):
       raise NotImplementedError("Unknown value type provided for mo_reward.__rtruediv__, expecting a scalar")
 
-    return mo_reward({ key: other / value for key, value in self.reward_dimensions_dict.items() })
+    return mo_reward({ key: other / value for key, value in self._reward_dimensions_dict.items() }, immutable=False)
 
+
+class PlotMo(plot.Plot):  # TODO: move to separate file
+
+  def add_reward(self, reward):
+    """Add a value to the reward the `Engine` will return to the player(s).
+
+    During a game iteration, any `Backdrop`, `Sprite`, or `Drape` can call this
+    method to add value to the reward that the `Engine` will return to the
+    player (or players) for having taken the action (or actions) supplied in the
+    `actions` argument to `Engine`'s `play` method.
+
+    This value need not be a number, but can be any kind of value appropriate to
+    the game.  If there's ever any chance that more than one `Sprite`, `Drape`,
+    or `Backdrop` would supply a reward during a game iteration, the value
+    should probably be of a type that supports the `+=` operator in a relevant
+    way, since this method uses addition to accumulate reward. (For custom
+    classes, this typically means implementing the `__iadd__` method.)
+
+    If this method is never called during a game iteration, the `Engine` will
+    supply None to the player (or players) as the reward.
+
+    Args:
+      reward: reward value to accumulate into the current game iteration's
+          reward for the player(s). See discussion for details.
+    """
+    if self._engine_directives.summed_reward is None:
+      self._engine_directives.summed_reward = reward.copy()    # incoming mo_reward argument has to be treated as immutable else rewards across timesteps will be accumulated in per timestep accumulator
+    else:
+      self._engine_directives.summed_reward += reward
 
 
 class SafetyEnvironmentMo(SafetyEnvironment):
@@ -265,11 +318,13 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     """Initialize a Python v2 environment for a pycolab game factory.
 
     Args:
-      enabled_mo_reward_dimensions: list of multi-objective rewards being used in current 
-        map. Providing this list enables reducing the dimensionality of the 
-        reward vector in such a way that unused reward dimensions are left out. 
-        If set to None then the multi-objective rewards are disabled: the 
+      enabled_mo_reward_dimensions: list of multi-objective rewards being used in 
+        current map. Providing this list enables reducing the dimensionality of 
+        the reward vector in such a way that unused reward dimensions are left 
+        out. If set to None then the multi-objective rewards are disabled: the 
         rewards are then scalarised before returning to the agent.
+      default_reward: defined in Pycolab interface, is currently ignored and 
+        overridden to mo_reward({})
       game_factory: a function that returns a new pycolab `Engine`
         instance corresponding to the game being played.
       game_bg_colours: a dict mapping game characters to background RGB colours.
@@ -302,20 +357,40 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     super(SafetyEnvironmentMo, self).__init__(*args, **kwargs)
 
     # parent class safety_game.SafetyEnvironment sets default_reward=0
-    self._default_reward = mo_reward({})
+    self._default_reward = mo_reward({})  # TODO: consider default_reward argument's value
 
 
-  #def _calculate_overall_performance(self):
-  #  """Calculates the agent performance across all the episodes.
+  # adapted from SafetyEnvironment.reset() in ai_safety_gridworlds\environments\shared\safety_game.py and from Environment.reset() in ai_safety_gridworlds\environments\shared\rl\pycolab_interface.py
+  def reset(self):
+    """Start a new episode."""
+    # Environment._compute_observation_spec() -> Environment.reset() -> Engine.its_showtime() -> Engine.play() -> Engine._update_and_render() is called straight from the constructor of Environment therefore need to overwrite _the_plot variable here. Overwriting it in SafetyEnvironmentMo.__init__ would be too late
 
-  #  By default, the method will return the average across all episodes.
-  #  You should override this method if you want to implement some other way of
-  #  calculating the overall performance.
+    # start of code adapted from from Environment.reset()
+    # Build a new game and retrieve its first set of state/reward/discount.
+    self._current_game = self._game_factory()
 
-  #  Returns:
-  #    A float value summarizing the performance of the agent.
-  #  """
-  #  return sum(self._episodic_performances) / len(self._episodic_performances)
+    self._current_game._the_plot = PlotMo()    # ADDED: incoming mo_reward argument to add_reward() has to be treated as immutable else rewards across timesteps will be accumulated in per timestep accumulator
+
+    self._state = environment.StepType.FIRST
+    # Collect environment returns from starting the game and update state.
+    observations, reward, discount = self._current_game.its_showtime()
+    self._update_for_game_step(observations, reward, discount)
+    timestep = environment.TimeStep(
+        step_type=self._state,
+        reward=None,
+        discount=None,
+        observation=self.last_observations)
+    # end of code adapted from from Environment.reset()
+
+    return self._process_timestep(timestep)  # adapted from SafetyEnvironment.reset()
+
+
+  #def _compute_observation_spec(self):
+  #  """Helper for `__init__`: compute our environment's observation spec."""
+  #  # Environment._compute_observation_spec() -> Environment.reset() -> Engine.its_showtime() -> Engine.play() -> Engine._update_and_render() is called straight from the constructor of Environment therefore need to overwrite _the_plot variable here. Overwriting it in SafetyEnvironmentMo.__init__ would be too late
+
+  #  self._current_game._the_plot = PlotMo()    # incoming mo_reward argument to add_reward() has to be treated as immutable else rewards across timesteps will be accumulated in per timestep accumulator
+  #  return super(SafetyEnvironmentMo, self)._compute_observation_spec()
 
   #def _get_hidden_reward(self, default_reward=0):
   #  """Extract the hidden reward from the plot of the current episode."""
@@ -341,7 +416,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
     # Reset the cumulative episode reward.
     if timestep.first():
-      self._episode_return = mo_reward({})    # CHANGED for multi-objective rewards
+      self._episode_return = mo_reward({})    # CHANGED: for multi-objective rewards
       self._clear_hidden_reward()
       # Clear the keys in environment data from the previous episode.
       for key in self._keys_to_clear:
@@ -371,7 +446,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
       self._calculate_episode_performance(timestep)
 
 
-    # CHANGED: add conversion of mo_reward to a list
+    # ADDED: add conversion of mo_reward to a list
     if timestep.reward is not None:
       timestep = timestep._replace(reward=timestep.reward.tolist(self.enabled_mo_reward_dimensions))
     else: # NB! do not return None since safe_grid_gym would convert that to scalar 0
