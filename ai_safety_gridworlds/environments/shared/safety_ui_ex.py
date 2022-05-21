@@ -167,25 +167,31 @@ class SafetyCursesUiEx(safety_ui.SafetyCursesUi):
       start_row += len(metrics) + 2
 
 
-    # print reward dimensions too, using:
+    # print reward dimensions too
+    if isinstance(self._env.episode_return, safety_game_mo.mo_reward):
 
-    last_reward = self._env._last_reward.tofull(self._env.enabled_mo_reward_dimensions)
-    episode_return = self._env.episode_return.tofull(self._env.enabled_mo_reward_dimensions)
+      last_reward = self._env._last_reward.tofull(self._env.enabled_mo_reward_dimensions)
+      episode_return = self._env.episode_return.tofull(self._env.enabled_mo_reward_dimensions)
 
-    enabled_reward_dimension_keys = safety_game_mo.mo_reward({}).get_enabled_reward_dimension_keys(self._env.enabled_mo_reward_dimensions)
-    key_col_width = padding + max(len(str(key)) for key in enabled_reward_dimension_keys) # key may be None therefore need str(key)
+      enabled_reward_dimension_keys = safety_game_mo.mo_reward({}).get_enabled_reward_dimension_keys(self._env.enabled_mo_reward_dimensions)
+      key_col_width = padding + max(len(str(key)) for key in enabled_reward_dimension_keys) # key may be None therefore need str(key)
 
-    screen.addstr(start_row, start_col, "Last reward:", curses.color_pair(0)) 
-    for row_index, (key, value) in enumerate(last_reward.items()):
-      screen.addstr(start_row + 1 + row_index, start_col, key, curses.color_pair(0)) 
-      screen.addstr(start_row + 1 + row_index, start_col + key_col_width, str(value), curses.color_pair(0)) 
-    start_row += len(last_reward) + 2
+      screen.addstr(start_row, start_col, "Last reward:", curses.color_pair(0)) 
+      for row_index, (key, value) in enumerate(last_reward.items()):
+        screen.addstr(start_row + 1 + row_index, start_col, key, curses.color_pair(0)) 
+        screen.addstr(start_row + 1 + row_index, start_col + key_col_width, str(value), curses.color_pair(0)) 
+      start_row += len(last_reward) + 2
 
-    screen.addstr(start_row, start_col, "Episode return:", curses.color_pair(0)) 
-    for row_index, (key, value) in enumerate(episode_return.items()):
-      screen.addstr(start_row + 1 + row_index, start_col, key, curses.color_pair(0)) 
-      screen.addstr(start_row + 1 + row_index, start_col + key_col_width, str(value), curses.color_pair(0)) 
-    start_row += len(episode_return) + 2
+      screen.addstr(start_row, start_col, "Episode return:", curses.color_pair(0)) 
+      for row_index, (key, value) in enumerate(episode_return.items()):
+        screen.addstr(start_row + 1 + row_index, start_col, key, curses.color_pair(0)) 
+        screen.addstr(start_row + 1 + row_index, start_col + key_col_width, str(value), curses.color_pair(0)) 
+      start_row += len(episode_return) + 2
+
+    else:
+
+      screen.addstr(start_row, start_col, "Last reward:     " + str(self._env._last_reward), curses.color_pair(0)) 
+      screen.addstr(start_row + 1, start_col, "Episode return:  " + str(self._env.episode_return), curses.color_pair(0)) 
 
 
 # adapted from ai_safety_gridworlds\environments\shared\safety_ui.py

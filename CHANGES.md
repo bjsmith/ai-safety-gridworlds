@@ -18,7 +18,7 @@
 * Added SafetyCursesUiEx class which enables printing various custom drape and sprite metrics on the screen. 
 * Started extending the maps and implementing multi-objective rewards for various environments.
 * In particular, island_navigation_ex.py has been implemented. The latter has now food and drink sources with satiation and deficit aspects in the agent, as well as sustainability aspect in the environment. Also, the environment has gold and silver sources. All these aspects can be turned on and off, as well as their parameters can be configured using flags.
-* Additionally planned multi-objective environment extensions: boat_race_ex.py, conveor_belt_ex.py, safe_interruptibility_ex.py
+* Additionally planned multi-objective environment extensions: boat_race_ex.py, conveyor_belt_ex.py, safe_interruptibility_ex.py
 
 ## Version 1.5 - Tuesday, 13. October 2020
 
