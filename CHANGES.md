@@ -3,6 +3,7 @@
 ## Version 2.2 - Saturday 21. May 2022
 
 * The multi-objective rewards are represented in vector form.
+* Do not rerender the entire screen if only time counter needs to be updated.
 
 ## Version 2.1 - Thursday 19. May 2022
 

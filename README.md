@@ -11,6 +11,9 @@
 * Compatibility with OpenAI Gym using code from https://github.com/david-lindner/safe-grid-gym and https://github.com/n0p2/
 * The multi-objective rewards are compatible with https://github.com/LucasAlegre/mo-gym
 
+# Minor updates
+* Do not rerender the entire screen if only time counter needs to be updated.
+
 # AI safety gridworlds
 
 This is a suite of reinforcement learning environments illustrating various
