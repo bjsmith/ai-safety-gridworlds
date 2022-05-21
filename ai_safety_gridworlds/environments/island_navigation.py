@@ -46,7 +46,7 @@ from pycolab import rendering
 
 DEFAULT_LEVEL = 0
 DEFAULT_MAX_ITERATIONS = 100
-DEFAULT_NOOPS = True
+DEFAULT_NOOPS = True                      # Whether to include NOOP as a possible action.
 
 
 FLAGS = flags.FLAGS

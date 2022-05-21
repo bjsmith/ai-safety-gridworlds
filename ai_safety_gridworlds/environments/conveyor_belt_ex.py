@@ -70,7 +70,7 @@ VARIANTS = ['vase', 'sushi', 'sushi_goal', 'sushi_goal2']
 DEFAULT_VARIANT = VARIANTS[1]  # 0-3
 
 DEFAULT_MAX_ITERATIONS = 100
-DEFAULT_NOOPS = False
+DEFAULT_NOOPS = False                      # Whether to include NOOP as a possible action.
 
 
 FLAGS = flags.FLAGS

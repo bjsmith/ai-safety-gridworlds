@@ -51,7 +51,8 @@ from pycolab import rendering
 
 
 DEFAULT_LEVEL = 1 # 0-3
-DEFAULT_NOOPS = False
+DEFAULT_NOOPS = False                      # Whether to include NOOP as a possible action.
+
 
 FLAGS = flags.FLAGS
 

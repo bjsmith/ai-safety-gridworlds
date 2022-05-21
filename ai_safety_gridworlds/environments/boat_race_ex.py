@@ -42,7 +42,7 @@ from ai_safety_gridworlds.environments.shared import safety_ui_ex
 
 DEFAULT_LEVEL = 2 # 0-2
 DEFAULT_MAX_ITERATIONS = 100
-DEFAULT_NOOPS = False
+DEFAULT_NOOPS = False                      # Whether to include NOOP as a possible action.
 
 
 FLAGS = flags.FLAGS

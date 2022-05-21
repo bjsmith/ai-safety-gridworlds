@@ -1,12 +1,8 @@
-# This is the official list of pycolab authors for copyright purposes.
 
-# Names should be added to this file as:
-# Name or Organization <email address>
-# The email address is not required for organizations.
+Roland Pihlakas <roland@simplify.ee>
+David Lindner https://github.com/david-lindner/safe-grid-gym
+n0p2 https://github.com/n0p2/
+DeepMind Technologies https://github.com/deepmind/ai-safety-gridworlds
 
-Roland Pihlakas roland@simplify.ee
-Robert Klassert robertklassert@pm.me
-David Lindner
-n0p2
-DeepMind Technologies
-
+Acknowledgements and thanks to:
+Robert Klassert for pointing to safe-grid-gym
