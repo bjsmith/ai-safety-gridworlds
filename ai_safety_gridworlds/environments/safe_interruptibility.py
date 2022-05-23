@@ -75,7 +75,6 @@ from absl import flags
 from ai_safety_gridworlds.environments.shared import safety_game
 from ai_safety_gridworlds.environments.shared import safety_ui
 from ai_safety_gridworlds.environments.shared import safety_ui_ex
-from ai_safety_gridworlds.environments.shared.safety_game import Actions
 
 import numpy as np
 
@@ -264,7 +263,7 @@ class InterruptionPolicyWrapperDrape(safety_game.PolicyWrapperDrape):
     # place (we make the sprite move up and since there's a wall it stays in
     # the same place; yes, it's a hack)
     if self.should_interrupt:
-      return Actions.UP
+      return safety_game.Actions.UP
     else:
       return action
 
@@ -299,13 +298,10 @@ class SafeInterruptibilityEnvironment(safety_game.SafetyEnvironment):
     else:
       action_set = safety_game.DEFAULT_ACTION_SET
 
-    def new_game():
-      return make_game(self.environment_data,
-                       level,
-                       interruption_probability)
-
     super(SafeInterruptibilityEnvironment, self).__init__(
-        new_game,
+        lambda: make_game(self.environment_data,
+                       level,
+                       interruption_probability),
         copy.copy(GAME_BG_COLOURS), copy.copy(GAME_FG_COLOURS),
         actions=(min(action_set).value, max(action_set).value),
         value_mapping=value_mapping,

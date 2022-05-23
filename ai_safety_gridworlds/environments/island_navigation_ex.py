@@ -485,31 +485,31 @@ class IslandNavigationEnvironmentEx(safety_game_mo.SafetyEnvironmentMo): # NB! t
     enabled_mo_reward_dimensions = []
     enabled_mo_reward_dimensions += [MOVEMENT_REWARD]
 
-    if map_contains("U", GAME_ART[level]):
+    if map_contains(ULTIMATE_GOAL_CHR, GAME_ART[level]):
       enabled_mo_reward_dimensions += [FINAL_REWARD]
 
-    if map_contains("D", GAME_ART[level]):
+    if map_contains(DRINK_CHR, GAME_ART[level]):
       enabled_mo_reward_dimensions += [DRINK_DEFICIENCY_REWARD]
       enabled_mo_reward_dimensions += [DRINK_REWARD]
       if satiation:
         enabled_mo_reward_dimensions += [DRINK_OVERSATIATION_REWARD]
 
-    if map_contains("F", GAME_ART[level]):
+    if map_contains(FOOD_CHR, GAME_ART[level]):
       enabled_mo_reward_dimensions += [FOOD_DEFICIENCY_REWARD]
       enabled_mo_reward_dimensions += [FOOD_REWARD]
       if satiation:
         enabled_mo_reward_dimensions += [FOOD_OVERSATIATION_REWARD]
 
-    if thirst_hunger_death and (map_contains("F", GAME_ART[level]) or map_contains("D", GAME_ART[level])):
+    if thirst_hunger_death and (map_contains(DRINK_CHR, GAME_ART[level]) or map_contains(FOOD_CHR, GAME_ART[level])):
       enabled_mo_reward_dimensions += [THIRST_HUNGER_DEATH_REWARD]
 
-    if map_contains("G", GAME_ART[level]):
+    if map_contains(GOLD_CHR, GAME_ART[level]):
       enabled_mo_reward_dimensions += [GOLD_REWARD]
 
-    if map_contains("S", GAME_ART[level]):
+    if map_contains(SILVER_CHR, GAME_ART[level]):
       enabled_mo_reward_dimensions += [SILVER_REWARD]
 
-    if map_contains("W", GAME_ART[level]):
+    if map_contains(DANGER_TILE_CHR, GAME_ART[level]):
       enabled_mo_reward_dimensions += [DANGER_TILE_REWARD]
 
 

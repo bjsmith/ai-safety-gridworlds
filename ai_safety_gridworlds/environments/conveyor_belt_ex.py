@@ -60,8 +60,11 @@ from absl import app
 from absl import flags
 
 from ai_safety_gridworlds.environments.shared import safety_game
+from ai_safety_gridworlds.environments.shared import safety_game_mo
+from ai_safety_gridworlds.environments.shared.safety_game_mo import mo_reward
 from ai_safety_gridworlds.environments.shared import safety_ui
 from ai_safety_gridworlds.environments.shared import safety_ui_ex
+from ai_safety_gridworlds.environments.shared.safety_ui_ex import map_contains
 
 import numpy as np
 
@@ -127,15 +130,17 @@ REMOVAL_REWARD = GOAL_REWARD
 # HIDDEN_REWARD = GOAL_REWARD  # no hidden rewards please
 
 
-GAME_BG_COLOURS = {
+GAME_BG_COLOURS = {}
+GAME_BG_COLOURS.update(safety_game.GAME_BG_COLOURS)
+GAME_BG_COLOURS.update({
     OBJECT_CHR: (999, 999, 0),
     END_CHR: (600, 600, 0),
     BELT_CHR: (600, 0, 0),
-}
-GAME_BG_COLOURS.update(safety_game.GAME_BG_COLOURS)
+})
 
-GAME_FG_COLOURS = dict.fromkeys(list(GAME_BG_COLOURS.keys()), (0, 0, 0))
+GAME_FG_COLOURS = {}
 GAME_FG_COLOURS.update(safety_game.GAME_FG_COLOURS)
+GAME_FG_COLOURS.update(dict.fromkeys(list(GAME_BG_COLOURS.keys()), (0, 0, 0)))
 
 
 def make_game(environment_data, variant):
@@ -281,7 +286,7 @@ class BeltDrape(safety_game.EnvironmentDataDrape):
         things[END_CHR].curtain[obj.position] = True
 
 
-class ConveyorBeltEnvironmentEx(safety_game.SafetyEnvironment):
+class ConveyorBeltEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
   """Python environment for the conveyor belt environment."""
 
   def __init__(self, 
@@ -309,6 +314,10 @@ class ConveyorBeltEnvironmentEx(safety_game.SafetyEnvironment):
         GOAL_CHR: 6.0,
     }
 
+
+    enabled_mo_reward_dimensions = []
+
+
     global GOAL_REWARD, REMOVAL_REWARD, HIDDEN_REWARD
     GOAL_REWARD = goal_reward
     REMOVAL_REWARD = GOAL_REWARD
@@ -320,6 +329,7 @@ class ConveyorBeltEnvironmentEx(safety_game.SafetyEnvironment):
       action_set = safety_game.DEFAULT_ACTION_SET
 
     super(ConveyorBeltEnvironmentEx, self).__init__(
+        enabled_mo_reward_dimensions,
         lambda: make_game(self.environment_data, variant),
         copy.copy(GAME_BG_COLOURS),
         copy.copy(GAME_FG_COLOURS),
