@@ -203,6 +203,11 @@ class mo_reward(object):  # TODO: move to separate file
       raise NotImplementedError("Unknown value type provided for mo_reward.__rsub__, expecting a scalar or mo_reward")
 
 
+  def __neg__(self):  # unary -
+
+    return mo_reward({ key: -value for key, value in self._reward_dimensions_dict.items() }, immutable=False)
+
+
   def __mul__(self, other):
 
     if not np.isscalar(other):
@@ -392,9 +397,53 @@ class SafetyEnvironmentMo(SafetyEnvironment):
   #  self._current_game._the_plot = PlotMo()    # incoming mo_reward argument to add_reward() has to be treated as immutable else rewards across timesteps will be accumulated in per timestep accumulator
   #  return super(SafetyEnvironmentMo, self)._compute_observation_spec()
 
-  #def _get_hidden_reward(self, default_reward=0):
-  #  """Extract the hidden reward from the plot of the current episode."""
-  #  return self.current_game.the_plot.get(HIDDEN_REWARD, default_reward)
+
+   # adapted from SafetyEnvironment.get_overall_performance() in ai_safety_gridworlds\environments\shared\safety_game.py
+  def get_overall_performance(self, default=None):
+    """Returns the performance measure of the agent across all episodes.
+
+    The agent performance metric might not be equal to the reward obtained,
+    depending if the environment has a hidden reward function or not.
+
+    Args:
+      default: value to return if performance is not yet calculated (i.e. None).
+
+    Returns:
+      A float if performance is calculated, None otherwise (if no default).
+    """
+    if len(self._episodic_performances) < 1:
+      return default
+    # CHANGE: mo_reward is not directly convertible to float
+    reward_dims = self._calculate_overall_performance().tolist(self.enabled_mo_reward_dimensions)
+    return [float(x) for x in reward_dims]  # an alternative would be to compute `float(sum(reward_dims))`
+
+
+  # adapted from SafetyEnvironment.get_last_performance() in ai_safety_gridworlds\environments\shared\safety_game.py
+  def get_last_performance(self, default=None):
+    """Returns the last measured performance of the agent.
+
+    The agent performance metric might not be equal to the reward obtained,
+    depending if the environment has a hidden reward function or not.
+
+    This method will return the last calculated performance metric.
+    When this metric was calculated will depend on 2 things:
+      * Last time the timestep step_type was LAST (so if the episode is not
+          finished, the metric will be for one of the previous episodes).
+      * Whether the environment calculates the metric for every episode, or only
+          does it for some (for example, in safe interruptibility, the metric is
+          only calculated on episodes where the agent was not interrupted).
+
+    Args:
+      default: value to return if performance is not yet calculated (i.e. None).
+
+    Returns:
+      A float if performance is calculated, None otherwise (if no default).
+    """
+    if len(self._episodic_performances) < 1:
+      return default
+    # CHANGE: mo_reward is not directly convertible to float
+    reward_dims = self._episodic_performances[-1].tolist(self.enabled_mo_reward_dimensions)
+    return [float(x) for x in reward_dims]  # an alternative would be to compute `float(sum(reward_dims))`
 
 
   # adapted from safety_game.py SafetyEnvironment._process_timestep(self, timestep)
@@ -416,7 +465,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
     # Reset the cumulative episode reward.
     if timestep.first():
-      self._episode_return = mo_reward({})    # CHANGED: for multi-objective rewards
+      self._episode_return = mo_reward({})    # CHANGE: for multi-objective rewards
       self._clear_hidden_reward()
       # Clear the keys in environment data from the previous episode.
       for key in self._keys_to_clear:
