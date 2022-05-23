@@ -151,13 +151,13 @@ class SafetyCursesUiEx(safety_ui.SafetyCursesUi):
 
     start_row = 2
     start_col = 20
+    padding = 2
 
     metrics = self._env._environment_data.get("metrics")
     if metrics is not None:
 
       # print(metrics)
 
-      padding = 2
       cell_widths = [padding + max(len(str(cell)) for cell in col) for col in metrics.T]
 
       screen.addstr(start_row, start_col, "Metrics:", curses.color_pair(0)) 
