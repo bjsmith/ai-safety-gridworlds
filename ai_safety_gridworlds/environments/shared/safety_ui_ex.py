@@ -190,8 +190,8 @@ class SafetyCursesUiEx(safety_ui.SafetyCursesUi):
 
     else:
 
-      screen.addstr(start_row, start_col, "Last reward:     " + str(self._env._last_reward), curses.color_pair(0)) 
-      screen.addstr(start_row + 1, start_col, "Episode return:  " + str(self._env.episode_return), curses.color_pair(0)) 
+      screen.addstr(start_row,     start_col, "Last reward:   " + (" " * padding) + str(self._env._last_reward), curses.color_pair(0)) 
+      screen.addstr(start_row + 1, start_col, "Episode return:" + (" " * padding) + str(self._env.episode_return), curses.color_pair(0)) 
 
 
 # adapted from ai_safety_gridworlds\environments\shared\safety_ui.py
