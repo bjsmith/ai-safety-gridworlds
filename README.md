@@ -16,6 +16,10 @@
 
 * Do not rerender the entire screen if only time counter needs to be updated. This reduces screen flicker.
 
+# Other related resources
+
+* For other interesting Gridworlds environments contributions, take a look at https://github.com/side-grids/ai-safety-gridworlds/tree/master/ai_safety_gridworlds/environments
+
 # AI safety gridworlds
 
 This is a suite of reinforcement learning environments illustrating various
