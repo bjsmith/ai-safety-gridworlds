@@ -168,7 +168,8 @@ class SafetyCursesUiEx(safety_ui.SafetyCursesUi):
 
 
     # print reward dimensions too
-    if isinstance(self._env.episode_return, safety_game_mo.mo_reward):
+    if (isinstance(self._env.episode_return, safety_game_mo.mo_reward) 
+        and len(self._env.enabled_mo_reward_dimensions) > 0):  # avoid errors in case the reward dimensions are not defined
 
       last_reward = self._env._last_reward.tofull(self._env.enabled_mo_reward_dimensions)
       episode_return = self._env.episode_return.tofull(self._env.enabled_mo_reward_dimensions)
