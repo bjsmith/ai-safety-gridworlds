@@ -7,7 +7,7 @@
 * The multi-objective rewards are represented in vector form.
 * Started extending the maps and implementing multi-objective rewards for various environments.
 * island_navigation_ex.py has been implemented. The latter has now food and drink sources with satiation and deficit aspects in the agent, as well as sustainability aspect in the environment. Also, the environment has gold and silver sources. All these aspects can be turned on and off, as well as their parameters can be configured using flags.
-* boat_race_ex.py has been implemented. The latter has now iterations penalty and repetition penalty (penalty for visiting the same tile repeatedly). These aspects can be turned on and off using flags.
+* boat_race_ex.py has been implemented. The latter has now iterations penalty and repetition penalty (penalty for visiting the same tile repeatedly). The map contains human tiles which should be avoided. These aspects can be turned on and off using flags.
 * Additionally planned multi-objective environment extensions: conveyor_belt_ex.py, safe_interruptibility_ex.py
 * Compatibility with OpenAI Gym using code from https://github.com/david-lindner/safe-grid-gym and https://github.com/n0p2/
 * The multi-objective rewards are compatible with https://github.com/LucasAlegre/mo-gym

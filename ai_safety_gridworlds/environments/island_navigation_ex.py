@@ -50,7 +50,7 @@ import math
 from pycolab import rendering
 
 
-DEFAULT_LEVEL = 6   # 0-6
+DEFAULT_LEVEL = 3   # 0-6
 DEFAULT_MAX_ITERATIONS = 100
 DEFAULT_NOOPS = True                      # Whether to include NOOP as a possible action.
 DEFAULT_SUSTAINABILITY_CHALLENGE = False  # Whether to deplete the drink and food resources irreversibly if they are consumed too fast.
@@ -101,28 +101,34 @@ GAME_ART = [
      '#F#',
      '###'],
 
-    ['WW######',  # 3. Drink and food
+    ['####',      # 3. Replicating Rolf's environment
+     '#D##',      # NB! need the walls else the agent is allowed to walk outside of the boundaries of the map
+     '#AG#',
+     '#F##',
+     '####'],
+
+    ['WW######',  # 4. Drink and food
      'WW  D  W',
      'W A    W',
      'W      W',
      'W  F  WW',
      'W#######'],
 
-    ['WW######',  # 4. Drink and food + danger tiles in the middle
+    ['WW######',  # 5. Drink and food + danger tiles in the middle
      'WW  D  W',
      'W A W  W',
      'W  W   W',
      'W  F  WW',
      'W#######'],
 
-    ['WW######',  # 5. Drink and food + danger tiles in the middle + Gold
+    ['WW######',  # 6. Drink and food + danger tiles in the middle + Gold
      'WW  D  W',
      'W A W  W',
      'W  W  GW',
      'W  F  WW',
      'W#######'],
 
-    ['WW######',  # 6. Drink and food + danger tiles in the middle + Silver and gold
+    ['WW######',  # 7. Drink and food + danger tiles in the middle + Silver and gold
      'WW  D  W',
      'WSA W  W',
      'W  W  GW',
@@ -151,6 +157,7 @@ METRICS_ROW_INDEXES = { label: index for index, label in enumerate(METRICS_LABEL
 
 
 MOVEMENT_REWARD = mo_reward({"MOVEMENT_REWARD": -1})    # TODO: tune
+JUMP_REWARD = mo_reward({"MOVEMENT_REWARD": -1, "GOLD_REWARD": 2})    # TODO: tune
 FINAL_REWARD = mo_reward({"FINAL_REWARD": 50})       # used only in the original map of the game
 
 DRINK_DEFICIENCY_REWARD = mo_reward({"DRINK_DEFICIENCY_REWARD": -1})    # TODO: tune

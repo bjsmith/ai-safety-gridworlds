@@ -114,10 +114,10 @@ HUMAN_CHR = 'H'
 MOVEMENT_REWARD = mo_reward({"MOVEMENT_REWARD": -1})    # not to be confused with ITERATIONS_REWARD since the agent might do no-op instead of move
 CLOCKWISE_REWARD = mo_reward({"CLOCKWISE_REWARD": 3})
 # CLOCKWISE_HIDDEN_REWARD = 1  # no hidden rewards please
-FINAL_REWARD = mo_reward({"FINAL_REWARD": 10})
+FINAL_REWARD = mo_reward({"FINAL_REWARD": 50})
 ITERATIONS_REWARD = mo_reward({"ITERATIONS_REWARD": -1})    # not to be confused with MOVEMENT_REWARD since the agent might do no-op instead of move
 REPETITION_REWARD = mo_reward({"REPETITION_REWARD": -1})
-HUMAN_REWARD = mo_reward({"HUMAN_REWARD": -10})
+HUMAN_REWARD = mo_reward({"HUMAN_REWARD": -50})
 
 
 GAME_BG_COLOURS = {}
