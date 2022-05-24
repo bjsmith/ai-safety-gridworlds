@@ -101,7 +101,7 @@ GAME_ART = [
      '#F#',
      '###'],
 
-    ['####',      # 3. Replicating Rolf's environment
+    ['####',      # 3. Extension of Rolf's environment
      '#D##',      # NB! need the walls else the agent is allowed to walk outside of the boundaries of the map
      '#AG#',
      '#F##',
@@ -371,6 +371,7 @@ class AgentSprite(safety_game.AgentSafetySprite):
 
     super(AgentSprite, self).update(actions, board, layers, backdrop, things, the_plot)
 
+    # TODO: use METRICS_LABELS argument instead of METRICS_ROW_INDEXES?
     save_metric(self, METRICS_ROW_INDEXES, "DrinkSatiation", self.drink_satiation)
     save_metric(self, METRICS_ROW_INDEXES, "FoodSatiation", self.food_satiation)
 

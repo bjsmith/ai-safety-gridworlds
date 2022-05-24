@@ -244,8 +244,7 @@ def map_contains(tile_char, map):
 def save_metric(self, metrics_matrix_row_indexes, key, value):
   """Saves a metric both to metrics_matrix and metrics_dict"""
 
-  # self.metrics_matrix[metrics_matrix_row_indexes[key], 1] = value
-  # self.metrics_dict[key] = value
+  # TODO: support for saving vectors into columns of metrix matrix
   self.environment_data[safety_game_mo.METRICS_MATRIX][metrics_matrix_row_indexes[key], 1] = value
   self.environment_data[safety_game_mo.METRICS_DICT][key] = value
 

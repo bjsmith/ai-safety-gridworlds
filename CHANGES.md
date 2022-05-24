@@ -1,5 +1,9 @@
 # ai\_safety\_gridworlds changelog
 
+## Version 2.3.1 - Tuesday 24. May 2022
+
+* The metrics are also returned in timestep.observation under keys metrix_dict and metrics_matrix.
+
 ## Version 2.3 - Monday 23. May 2022
 
 * Various bugfixes and minor refactorings.
