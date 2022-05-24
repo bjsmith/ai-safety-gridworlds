@@ -3,12 +3,12 @@
 ## Version 2.3 - Monday 23. May 2022
 
 * Various bugfixes and minor refactorings.
-* boat_race_ex.py has been implemented. The latter has now iterations penalty and repetion penalty (penalty for visiting the same tile repeatedly). These aspects can be turned on and off using flags.
+* boat_race_ex.py has been implemented. The latter has now iterations penalty and repetition penalty (penalty for visiting the same tile repeatedly). These aspects can be turned on and off using flags.
 
 ## Version 2.2 - Saturday 21. May 2022
 
 * The multi-objective rewards are represented in vector form.
-* Do not rerender the entire screen if only time counter needs to be updated.
+* Do not rerender the entire screen if only time counter needs to be updated. This reduces screen flicker.
 
 ## Version 2.1 - Thursday 19. May 2022
 

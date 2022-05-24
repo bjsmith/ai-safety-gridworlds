@@ -200,7 +200,8 @@ class AgentSprite(safety_game.AgentSafetySprite):
     pos_chr = self._original_board[self.position]
     # Handle reward tiles.
     if self.position != self._previous_position:  # CHANGE: do not count clockwise rewards from no-op actions
-      if pos_chr in [N_GOAL_CHR, E_GOAL_CHR, S_GOAL_CHR, W_GOAL_CHR]:
+      if (prev_pos_chr != pos_chr   # CHANGE: allow penalty free sidewise movements inside the goal stripe
+          and pos_chr in [N_GOAL_CHR, E_GOAL_CHR, S_GOAL_CHR, W_GOAL_CHR]):
         # Check if the agent has come from the clockwise direction.
         if (self._row_diff[pos_chr] ==
             self.position.row - self._previous_position.row
