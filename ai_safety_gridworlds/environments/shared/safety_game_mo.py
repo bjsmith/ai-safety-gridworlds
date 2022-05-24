@@ -21,6 +21,7 @@ from __future__ import print_function
 import itertools
 
 # Dependency imports
+from ai_safety_gridworlds.environments.shared.rl import array_spec as specs
 from ai_safety_gridworlds.environments.shared.rl import environment
 from ai_safety_gridworlds.environments.shared.termination_reason_enum import TerminationReason
 from ai_safety_gridworlds.environments.shared.safety_game import SafetyEnvironment, ACTUAL_ACTIONS, TERMINATION_REASON, EXTRA_OBSERVATIONS
@@ -28,6 +29,12 @@ from ai_safety_gridworlds.environments.shared.safety_game import SafetyEnvironme
 import numpy as np
 
 from pycolab import plot
+
+import six
+
+
+METRICS_DICT = 'metrics_dict'
+METRICS_MATRIX = 'metrics_matrix'
 
 
 class mo_reward(object):  # TODO: move to separate file
@@ -311,15 +318,16 @@ class SafetyEnvironmentMo(SafetyEnvironment):
   """
 
   def __init__(self, enabled_mo_reward_dimensions, 
+               *args, 
                #game_factory,
                #game_bg_colours,
                #game_fg_colours,
                #actions=None,
                #value_mapping=None,
-               #environment_data=None,
+               environment_data={},
                #repainter=None,
                #max_iterations=100,
-               *args, **kwargs):
+               **kwargs):
     """Initialize a Python v2 environment for a pycolab game factory.
 
     Args:
@@ -359,7 +367,17 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
     self.enabled_mo_reward_dimensions = enabled_mo_reward_dimensions
 
-    super(SafetyEnvironmentMo, self).__init__(*args, **kwargs)
+
+    if environment_data is None:
+      self._environment_data = {}
+    else:
+      self._environment_data = environment_data
+
+    self._environment_data[METRICS_DICT] = dict()
+    self._environment_data[METRICS_MATRIX] = np.empty([0, 2], np.object)
+
+
+    super(SafetyEnvironmentMo, self).__init__(*args, environment_data=self._environment_data, **kwargs)
 
     # parent class safety_game.SafetyEnvironment sets default_reward=0
     self._default_reward = mo_reward({})  # TODO: consider default_reward argument's value
@@ -398,7 +416,26 @@ class SafetyEnvironmentMo(SafetyEnvironment):
   #  return super(SafetyEnvironmentMo, self)._compute_observation_spec()
 
 
-   # adapted from SafetyEnvironment.get_overall_performance() in ai_safety_gridworlds\environments\shared\safety_game.py
+  # adapted from SafetyEnvironment._compute_observation_spec() in ai_safety_gridworlds\environments\shared\safety_game.py
+  def _compute_observation_spec(self):
+    """Helper for `__init__`: compute our environment's observation spec."""
+    # This method needs to be overwritten because the parent's method checks
+    # all the items in the observation and chokes on the `environment_data`.
+
+    # Start an environment, examine the values it gives to us, and reset things
+    # back to default.
+    timestep = self.reset()
+    observation_spec = {k: specs.ArraySpec(v.shape, v.dtype, name=k)
+                        for k, v in six.iteritems(timestep.observation)
+                        if k not in [EXTRA_OBSERVATIONS, METRICS_DICT, METRICS_MATRIX]}                 # CHANGE
+    observation_spec[EXTRA_OBSERVATIONS] = dict()
+    observation_spec[METRICS_DICT] = dict()                                                             # ADDED
+    observation_spec[METRICS_MATRIX] = np.empty(timestep.observation[METRICS_MATRIX].shape, np.object)  # ADDED
+    self._drop_last_episode()
+    return observation_spec
+
+
+  # adapted from SafetyEnvironment.get_overall_performance() in ai_safety_gridworlds\environments\shared\safety_game.py
   def get_overall_performance(self, default=None):
     """Returns the performance measure of the agent across all episodes.
 
@@ -493,6 +530,11 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     # Calculate performance metric if the episode has finished.
     if timestep.last():
       self._calculate_episode_performance(timestep)
+
+
+    # ADDED
+    timestep.observation[METRICS_MATRIX] = self._environment_data.get(METRICS_MATRIX, {}) 
+    timestep.observation[METRICS_DICT] = self._environment_data.get(METRICS_DICT, {})    
 
 
     # ADDED: add conversion of mo_reward to a list

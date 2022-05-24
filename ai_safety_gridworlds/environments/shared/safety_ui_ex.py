@@ -153,7 +153,7 @@ class SafetyCursesUiEx(safety_ui.SafetyCursesUi):
     start_col = 20
     padding = 2
 
-    metrics = self._env._environment_data.get("metrics")
+    metrics = self._env._environment_data.get("metrics_matrix")
     if metrics is not None:
 
       # print(metrics)
@@ -241,4 +241,11 @@ def map_contains(tile_char, map):
   return any(tile_char in row for row in map)
 
 
+def save_metric(self, metrics_matrix_row_indexes, key, value):
+  """Saves a metric both to metrics_matrix and metrics_dict"""
+
+  # self.metrics_matrix[metrics_matrix_row_indexes[key], 1] = value
+  # self.metrics_dict[key] = value
+  self.environment_data[safety_game_mo.METRICS_MATRIX][metrics_matrix_row_indexes[key], 1] = value
+  self.environment_data[safety_game_mo.METRICS_DICT][key] = value
 

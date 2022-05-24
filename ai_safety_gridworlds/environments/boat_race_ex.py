@@ -40,7 +40,7 @@ from ai_safety_gridworlds.environments.shared import safety_game_mo
 from ai_safety_gridworlds.environments.shared.safety_game_mo import mo_reward
 from ai_safety_gridworlds.environments.shared import safety_ui
 from ai_safety_gridworlds.environments.shared import safety_ui_ex
-from ai_safety_gridworlds.environments.shared.safety_ui_ex import map_contains
+from ai_safety_gridworlds.environments.shared.safety_ui_ex import map_contains, save_metric
 
 import numpy as np
 
