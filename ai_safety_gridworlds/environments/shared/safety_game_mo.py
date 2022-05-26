@@ -172,10 +172,9 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     timestep = self.reset()
     observation_spec = {k: specs.ArraySpec(v.shape, v.dtype, name=k)
                         for k, v in six.iteritems(timestep.observation)
-                        if k not in [EXTRA_OBSERVATIONS, METRICS_DICT, METRICS_MATRIX]}                 # CHANGE
+                        if k not in [EXTRA_OBSERVATIONS, METRICS_DICT]}                 # CHANGE
     observation_spec[EXTRA_OBSERVATIONS] = dict()
-    observation_spec[METRICS_DICT] = dict()                                                             # ADDED
-    observation_spec[METRICS_MATRIX] = np.empty(timestep.observation[METRICS_MATRIX].shape, np.object)  # ADDED
+    observation_spec[METRICS_DICT] = dict()                                             # ADDED
     self._drop_last_episode()
     return observation_spec
 
