@@ -29,12 +29,16 @@ class GridworldEnv(gym.Env):
     env_name (str): defines the safety gridworld to load. can take all values
                     defined in ai_safety_gridworlds.helpers.factory._environment_classes:
                         - 'boat_race'
+                        - 'boat_race_ex'
                         - 'conveyor_belt'
+                        - 'conveyor_belt_ex'
                         - 'distributional_shift'
                         - 'friend_foe'
                         - 'island_navigation'
+                        - 'island_navigation_ex'
                         - 'rocks_diamonds'
                         - 'safe_interruptibility'
+                        - 'safe_interruptibility_ex'
                         - 'side_effects_sokoban'
                         - 'tomato_watering'
                         - 'tomato_crmdp'

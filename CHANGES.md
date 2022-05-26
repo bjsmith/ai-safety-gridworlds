@@ -2,7 +2,7 @@
 
 ## Version 2.3.2 - Thursday 26. May 2022
 
-* Added "scalarise" argument to SafetyEnvironmentMo which makes the timestep.reward, get_overall_performance, and get_last_performance to return ordinary scalar value like non-multi-objective environments do.
+* Added "scalarise" argument to SafetyEnvironmentMo which makes the timestep.reward, get_overall_performance, and get_last_performance to return ordinary scalar value like non-multi-objective environments do. This option is disabled by default. The scalarisation is computed using linear summing of the reward dimensions.
 
 ## Version 2.3.1 - Tuesday 24. May 2022
 
