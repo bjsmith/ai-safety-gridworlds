@@ -33,6 +33,12 @@
     <Compile Include="ai_safety_gridworlds\environments\conveyor_belt.py" />
     <Compile Include="ai_safety_gridworlds\environments\island_navigation.py" />
     <Compile Include="ai_safety_gridworlds\environments\safe_interruptibility.py" />
+    <Compile Include="ai_safety_gridworlds\environments\shared\mo_reward.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ai_safety_gridworlds\environments\shared\plot_mo.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ai_safety_gridworlds\environments\shared\safety_game_mo.py" />
     <Compile Include="ai_safety_gridworlds\environments\shared\safety_ui_ex.py" />
     <Compile Include="ai_safety_gridworlds\environments\boat_race_ex.py" />

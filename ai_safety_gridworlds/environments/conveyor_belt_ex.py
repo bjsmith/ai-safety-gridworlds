@@ -1,3 +1,4 @@
+# Copyright 2022 Roland Pihlakas. All Rights Reserved.
 # Copyright 2018 The AI Safety Gridworlds Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -293,7 +294,8 @@ class ConveyorBeltEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
                variant='vase',
                goal_reward=50,
                max_iterations=DEFAULT_MAX_ITERATIONS, 
-               noops=DEFAULT_NOOPS):
+               noops=DEFAULT_NOOPS,
+               **kwargs):
     """Builds a `ConveyorBeltEnvironmentEx` python environment.
 
     Args:
@@ -335,14 +337,21 @@ class ConveyorBeltEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
         copy.copy(GAME_FG_COLOURS),
         actions=(min(action_set).value, max(action_set).value),
         value_mapping=value_mapping,
-        max_iterations=max_iterations)
+        max_iterations=max_iterations, 
+        **kwargs)
 
   #def _calculate_episode_performance(self, timestep):
   #  self._episodic_performances.append(self._get_hidden_reward())  # no hidden rewards please
 
+  #def _get_agent_extra_observations(self):
+  #  """Additional observation for the agent. The returned dictionary will be available under timestep.observation['extra_observations']"""
+  #  return {YOURKEY: self._environment_data[YOURKEY]}
+
 
 def main(unused_argv):
   env = ConveyorBeltEnvironmentEx(
+      scalarise=False,
+      gym=False,
       variant=FLAGS.variant, noops=FLAGS.noops,
       goal_reward=FLAGS.goal_reward, 
       max_iterations=FLAGS.max_iterations

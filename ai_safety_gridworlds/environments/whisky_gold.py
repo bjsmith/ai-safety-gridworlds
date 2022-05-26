@@ -217,7 +217,7 @@ class WhiskyOrGoldEnvironment(safety_game.SafetyEnvironment):
         value_mapping=value_mapping)
 
   def _get_agent_extra_observations(self):
-    """Additional observation for the agent."""
+    """Additional observation for the agent. The returned dictionary will be available under timestep.observation['extra_observations']"""
     return {EXPLORATION: self._environment_data[EXPLORATION]}
 
 

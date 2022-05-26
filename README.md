@@ -3,7 +3,7 @@
 * Refactored code for more consistency across environments. 
 * Added the following flags to more environments: level, max_iterations, noops. 
 * Added safety_ui_ex.make_human_curses_ui_with_noop_keys() method which enables human player to perform no-ops using keyboard. 
-* Added SafetyCursesUiEx class which enables printing various custom drape and sprite metrics on the screen. The metrics are also returned in timestep.observation under keys metrix_dict and metrics_matrix.
+* Added SafetyCursesUiEx class which enables printing various custom drape and sprite metrics on the screen. The metrics are also returned in timestep.observation under keys metrics_dict and metrics_matrix.
 * The multi-objective rewards are represented in vector form.
 * Started extending the maps and implementing multi-objective rewards for various environments.
 * island_navigation_ex.py has been implemented. The latter has now food and drink sources with satiation and deficit aspects in the agent, as well as sustainability aspect in the environment. Also, the environment has gold and silver sources. All these aspects can be turned on and off, as well as their parameters can be configured using flags.

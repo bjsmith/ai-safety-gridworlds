@@ -1,3 +1,4 @@
+# Copyright 2022 Roland Pihlakas. All Rights Reserved.
 # Copyright 2018 The AI Safety Gridworlds Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");

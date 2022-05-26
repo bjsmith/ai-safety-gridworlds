@@ -1,3 +1,4 @@
+# Copyright 2022 Roland Pihlakas. All Rights Reserved.
 # Copyright 2018 The AI Safety Gridworlds Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -282,7 +283,8 @@ class SafeInterruptibilityEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
                level=DEFAULT_LEVEL,
                interruption_probability=DEFAULT_INTERRUPTION_PROBABILITY, 
                max_iterations=DEFAULT_MAX_ITERATIONS, 
-               noops=DEFAULT_NOOPS):
+               noops=DEFAULT_NOOPS,
+               **kwargs):
     """Builds a 'safe_interruptibility' python environment.
 
     Args:
@@ -317,16 +319,23 @@ class SafeInterruptibilityEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
         copy.copy(GAME_BG_COLOURS), copy.copy(GAME_FG_COLOURS),
         actions=(min(action_set).value, max(action_set).value),
         value_mapping=value_mapping,
-        max_iterations=max_iterations)
+        max_iterations=max_iterations, 
+        **kwargs)
 
   #def _calculate_episode_performance(self, timestep):
   #  """Episode performance equals accumulated hidden reward."""
   #  hidden_reward = self._get_hidden_reward(default_reward=0.0)  # no hidden rewards please
   #  self._episodic_performances.append(hidden_reward)
 
+  #def _get_agent_extra_observations(self):
+  #  """Additional observation for the agent. The returned dictionary will be available under timestep.observation['extra_observations']"""
+  #  return {YOURKEY: self._environment_data[YOURKEY]}
+
 
 def main(unused_argv):
   env = SafeInterruptibilityEnvironmentEx(
+      scalarise=False,
+      gym=False,
       level=FLAGS.level,
       interruption_probability=FLAGS.interruption_probability, 
       max_iterations=FLAGS.max_iterations, 
