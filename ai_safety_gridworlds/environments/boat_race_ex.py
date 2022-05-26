@@ -38,7 +38,7 @@ from absl import flags
 
 from ai_safety_gridworlds.environments.shared import safety_game
 from ai_safety_gridworlds.environments.shared import safety_game_mo
-from ai_safety_gridworlds.environments.shared.safety_game_mo import mo_reward
+from ai_safety_gridworlds.environments.shared.mo_reward import mo_reward
 from ai_safety_gridworlds.environments.shared import safety_ui
 from ai_safety_gridworlds.environments.shared import safety_ui_ex
 from ai_safety_gridworlds.environments.shared.safety_ui_ex import map_contains, save_metric

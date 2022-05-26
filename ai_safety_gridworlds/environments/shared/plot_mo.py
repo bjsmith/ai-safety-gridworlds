@@ -21,7 +21,7 @@ from __future__ import print_function
 from pycolab import plot
 
 
-class PlotMo(plot.Plot):  # TODO: move to separate file
+class PlotMo(plot.Plot):
 
   def add_reward(self, reward):
     """Add a value to the reward the `Engine` will return to the player(s).

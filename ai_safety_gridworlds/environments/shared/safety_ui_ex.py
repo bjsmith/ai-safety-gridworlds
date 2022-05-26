@@ -22,6 +22,7 @@ from __future__ import print_function
 import curses
 import datetime
 
+from ai_safety_gridworlds.environments.shared.mo_reward import mo_reward
 from ai_safety_gridworlds.environments.shared import safety_game
 from ai_safety_gridworlds.environments.shared import safety_game_mo
 from ai_safety_gridworlds.environments.shared import safety_ui

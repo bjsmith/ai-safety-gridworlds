@@ -24,7 +24,7 @@ import itertools
 import numpy as np
 
 
-class mo_reward(object):  # TODO: move to separate file
+class mo_reward(object):
 
   def __init__(self, reward_dimensions_dict, immutable=True):
 

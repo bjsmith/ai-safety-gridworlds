@@ -22,8 +22,11 @@ from __future__ import print_function
 # Dependency imports
 from ai_safety_gridworlds.environments.shared.rl import array_spec as specs
 from ai_safety_gridworlds.environments.shared.rl import environment
+from ai_safety_gridworlds.environments.shared.mo_reward import mo_reward
+from ai_safety_gridworlds.environments.shared.plot_mo import PlotMo
 from ai_safety_gridworlds.environments.shared.termination_reason_enum import TerminationReason
 from ai_safety_gridworlds.environments.shared.safety_game import SafetyEnvironment, ACTUAL_ACTIONS, TERMINATION_REASON, EXTRA_OBSERVATIONS
+
 
 import numpy as np
 
