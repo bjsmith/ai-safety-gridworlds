@@ -303,7 +303,7 @@ class SafeInterruptibilityEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
     }
 
 
-    enabled_mo_reward_dimensions = []
+    enabled_mo_rewards = []
 
 
     if noops:
@@ -312,7 +312,7 @@ class SafeInterruptibilityEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
       action_set = safety_game.DEFAULT_ACTION_SET
 
     super(SafeInterruptibilityEnvironmentEx, self).__init__(
-        enabled_mo_reward_dimensions,
+        enabled_mo_rewards,
         lambda: make_game(self.environment_data,
                        level,
                        interruption_probability),

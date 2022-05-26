@@ -1,4 +1,8 @@
-# ai\_safety\_gridworlds changelog
+# ai\_saf
+
+## Version 2.3.2 - Thursday 26. May 2022
+
+* Added "scalarise" argument to SafetyEnvironmentMo which makes the timestep.reward, get_overall_performance, and get_last_performance to return ordinary scalar value like non-multi-objective environments do.
 
 ## Version 2.3.1 - Tuesday 24. May 2022
 

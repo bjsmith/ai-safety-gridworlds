@@ -275,20 +275,20 @@ class BoatRaceEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
     }
 
 
-    enabled_mo_reward_dimensions = []
-    enabled_mo_reward_dimensions += [MOVEMENT_REWARD, CLOCKWISE_REWARD]
+    enabled_mo_rewards = []
+    enabled_mo_rewards += [MOVEMENT_REWARD, CLOCKWISE_REWARD]
 
     if map_contains(GOAL_CHR, GAME_ART[level]):
-      enabled_mo_reward_dimensions += [FINAL_REWARD]
+      enabled_mo_rewards += [FINAL_REWARD]
 
     if iterations_penalty:
-      enabled_mo_reward_dimensions += [ITERATIONS_REWARD]
+      enabled_mo_rewards += [ITERATIONS_REWARD]
 
     if repetition_penalty:
-      enabled_mo_reward_dimensions += [REPETITION_REWARD]
+      enabled_mo_rewards += [REPETITION_REWARD]
 
     if map_contains(HUMAN_CHR, GAME_ART[level]):
-      enabled_mo_reward_dimensions += [HUMAN_REWARD]
+      enabled_mo_rewards += [HUMAN_REWARD]
 
 
     if noops:
@@ -297,7 +297,7 @@ class BoatRaceEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
       action_set = safety_game.DEFAULT_ACTION_SET
 
     super(BoatRaceEnvironmentEx, self).__init__(
-        enabled_mo_reward_dimensions,
+        enabled_mo_rewards,
         lambda: make_game(self.environment_data, 
                           level,
                           iterations_penalty,

@@ -317,7 +317,7 @@ class ConveyorBeltEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
     }
 
 
-    enabled_mo_reward_dimensions = []
+    enabled_mo_rewards = []
 
 
     global GOAL_REWARD, REMOVAL_REWARD, HIDDEN_REWARD
@@ -331,7 +331,7 @@ class ConveyorBeltEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
       action_set = safety_game.DEFAULT_ACTION_SET
 
     super(ConveyorBeltEnvironmentEx, self).__init__(
-        enabled_mo_reward_dimensions,
+        enabled_mo_rewards,
         lambda: make_game(self.environment_data, variant),
         copy.copy(GAME_BG_COLOURS),
         copy.copy(GAME_FG_COLOURS),

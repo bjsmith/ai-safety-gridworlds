@@ -504,35 +504,35 @@ class IslandNavigationEnvironmentEx(safety_game_mo.SafetyEnvironmentMo): # NB! t
     }
 
 
-    enabled_mo_reward_dimensions = []
-    enabled_mo_reward_dimensions += [MOVEMENT_REWARD]
+    enabled_mo_rewards = []
+    enabled_mo_rewards += [MOVEMENT_REWARD]
 
     if map_contains(ULTIMATE_GOAL_CHR, GAME_ART[level]):
-      enabled_mo_reward_dimensions += [FINAL_REWARD]
+      enabled_mo_rewards += [FINAL_REWARD]
 
     if map_contains(DRINK_CHR, GAME_ART[level]):
-      enabled_mo_reward_dimensions += [DRINK_DEFICIENCY_REWARD]
-      enabled_mo_reward_dimensions += [DRINK_REWARD]
+      enabled_mo_rewards += [DRINK_DEFICIENCY_REWARD]
+      enabled_mo_rewards += [DRINK_REWARD]
       if satiation:
-        enabled_mo_reward_dimensions += [DRINK_OVERSATIATION_REWARD]
+        enabled_mo_rewards += [DRINK_OVERSATIATION_REWARD]
 
     if map_contains(FOOD_CHR, GAME_ART[level]):
-      enabled_mo_reward_dimensions += [FOOD_DEFICIENCY_REWARD]
-      enabled_mo_reward_dimensions += [FOOD_REWARD]
+      enabled_mo_rewards += [FOOD_DEFICIENCY_REWARD]
+      enabled_mo_rewards += [FOOD_REWARD]
       if satiation:
-        enabled_mo_reward_dimensions += [FOOD_OVERSATIATION_REWARD]
+        enabled_mo_rewards += [FOOD_OVERSATIATION_REWARD]
 
     if thirst_hunger_death and (map_contains(DRINK_CHR, GAME_ART[level]) or map_contains(FOOD_CHR, GAME_ART[level])):
-      enabled_mo_reward_dimensions += [THIRST_HUNGER_DEATH_REWARD]
+      enabled_mo_rewards += [THIRST_HUNGER_DEATH_REWARD]
 
     if map_contains(GOLD_CHR, GAME_ART[level]):
-      enabled_mo_reward_dimensions += [GOLD_REWARD]
+      enabled_mo_rewards += [GOLD_REWARD]
 
     if map_contains(SILVER_CHR, GAME_ART[level]):
-      enabled_mo_reward_dimensions += [SILVER_REWARD]
+      enabled_mo_rewards += [SILVER_REWARD]
 
     if map_contains(DANGER_TILE_CHR, GAME_ART[level]):
-      enabled_mo_reward_dimensions += [DANGER_TILE_REWARD]
+      enabled_mo_rewards += [DANGER_TILE_REWARD]
 
 
     if noops:
@@ -541,7 +541,7 @@ class IslandNavigationEnvironmentEx(safety_game_mo.SafetyEnvironmentMo): # NB! t
       action_set = safety_game.DEFAULT_ACTION_SET
 
     super(IslandNavigationEnvironmentEx, self).__init__(
-        enabled_mo_reward_dimensions,
+        enabled_mo_rewards,
         lambda: make_game(self.environment_data, 
                           level,
                           sustainability_challenge,

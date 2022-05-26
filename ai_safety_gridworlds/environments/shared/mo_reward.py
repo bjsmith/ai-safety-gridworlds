@@ -38,32 +38,38 @@ class mo_reward(object):
     return mo_reward(dict_clone, immutable=False)
 
 
-  def get_enabled_reward_dimension_keys(self, enabled_mo_reward_dimensions):
+  def get_enabled_reward_dimension_keys(self, enabled_mo_rewards):
+    """Returns keys of all dimensions defined in enabled_mo_rewards.
 
-    if enabled_mo_reward_dimensions is None:
+    Args:
+      enabled_mo_rewards: a list of mo_reward objects.
+    """
+
+    if enabled_mo_rewards is None:
 
       return [None]
 
-    else: # if enabled_mo_reward_dimensions is not None:
+    else: # if enabled_mo_rewards is not None:
 
       # each reward may contain more than one enabled dimension
       keys_per_reward = [{ key for key, unit_value in reward._reward_dimensions_dict.items() if unit_value != 0 }
-                                                        for reward in enabled_mo_reward_dimensions]
+                                                        for reward in enabled_mo_rewards]
       # enabled_reward_dimension_keys = set.union(*keys_per_reward)  # this does not preserve the order of the keys
       enabled_reward_dimension_keys = dict.fromkeys(itertools.chain.from_iterable(keys_per_reward)).keys()  # this preserves the order of the keys
       return list(enabled_reward_dimension_keys)
 
 
-  def tolist(self, enabled_mo_reward_dimensions):
+  def tolist(self, enabled_mo_rewards):
+    """Converts the mo_reward value to a list of all dimension values including dimensions with zero values."""
 
-    if enabled_mo_reward_dimensions is None:
+    if enabled_mo_rewards is None:
 
       reward_values = self._reward_dimensions_dict.values()
       return sum(reward_values)
 
-    else: # if enabled_mo_reward_dimensions is not None:
+    else: # if enabled_mo_rewards is not None:
 
-      enabled_reward_dimension_keys = self.get_enabled_reward_dimension_keys(enabled_mo_reward_dimensions)
+      enabled_reward_dimension_keys = self.get_enabled_reward_dimension_keys(enabled_mo_rewards)
 
       for key in self._reward_dimensions_dict.keys():
         if key not in enabled_reward_dimension_keys:
@@ -75,16 +81,17 @@ class mo_reward(object):
       return result
 
 
-  def tofull(self, enabled_mo_reward_dimensions):
+  def tofull(self, enabled_mo_rewards):
+    """Converts the mo_reward value to dictionary containing keys of all dimensions including dimensions with zero values."""
 
-    if enabled_mo_reward_dimensions is None:
+    if enabled_mo_rewards is None:
 
       reward_values = self._reward_dimensions_dict.values()
       return {None: sum(reward_values)}
 
-    else: # if enabled_mo_reward_dimensions is not None:
+    else: # if enabled_mo_rewards is not None:
 
-      enabled_reward_dimension_keys = self.get_enabled_reward_dimension_keys(enabled_mo_reward_dimensions)
+      enabled_reward_dimension_keys = self.get_enabled_reward_dimension_keys(enabled_mo_rewards)
 
       for key in self._reward_dimensions_dict.keys():
         if key not in enabled_reward_dimension_keys:

@@ -24,8 +24,8 @@ from ai_safety_gridworlds.environments.shared.rl import array_spec as specs
 from ai_safety_gridworlds.environments.shared.rl import environment
 from ai_safety_gridworlds.environments.shared.mo_reward import mo_reward
 from ai_safety_gridworlds.environments.shared.plot_mo import PlotMo
-from ai_safety_gridworlds.environments.shared.termination_reason_enum import TerminationReason
 from ai_safety_gridworlds.environments.shared.safety_game import SafetyEnvironment, ACTUAL_ACTIONS, TERMINATION_REASON, EXTRA_OBSERVATIONS
+from ai_safety_gridworlds.environments.shared.termination_reason_enum import TerminationReason
 
 
 import numpy as np
@@ -52,7 +52,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
   instantiate the python environment API around the pycolab game.
   """
 
-  def __init__(self, enabled_mo_reward_dimensions, 
+  def __init__(self, enabled_mo_rewards, 
                *args, 
                #game_factory,
                #game_bg_colours,
@@ -68,11 +68,15 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     """Initialize a Python v2 environment for a pycolab game factory.
 
     Args:
-      enabled_mo_reward_dimensions: list of multi-objective rewards being used in 
+      enabled_mo_rewards: list of multi-objective rewards being used in 
         current map. Providing this list enables reducing the dimensionality of 
         the reward vector in such a way that unused reward dimensions are left 
         out. If set to None then the multi-objective rewards are disabled: the 
         rewards are then scalarised before returning to the agent.
+      scalarise: Makes the timestep.reward, get_overall_performance, and 
+        get_last_performance to return ordinary scalar value like 
+        non-multi-objective environments do. The scalarisation is computed using 
+        linear summing of the reward dimensions.
       default_reward: defined in Pycolab interface, is currently ignored and 
         overridden to mo_reward({})
       game_factory: a function that returns a new pycolab `Engine`
@@ -102,7 +106,9 @@ class SafetyEnvironmentMo(SafetyEnvironment):
       max_iterations: the maximum number of steps for one episode.
     """
 
-    self.enabled_mo_reward_dimensions = enabled_mo_reward_dimensions
+    self.enabled_mo_rewards = enabled_mo_rewards
+    self.scalarise = scalarise
+    self.gym = gym  # TODO
 
 
     if environment_data is None:
@@ -188,8 +194,11 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     if len(self._episodic_performances) < 1:
       return default
     # CHANGE: mo_reward is not directly convertible to float
-    reward_dims = self._calculate_overall_performance().tolist(self.enabled_mo_reward_dimensions)
-    return [float(x) for x in reward_dims]  # an alternative would be to compute `float(sum(reward_dims))`
+    reward_dims = self._calculate_overall_performance().tolist(self.enabled_mo_rewards)
+    if self.scalarise:
+      return float(sum(reward_dims))
+    else:
+      return [float(x) for x in reward_dims]
 
 
   # adapted from SafetyEnvironment.get_last_performance() in ai_safety_gridworlds\environments\shared\safety_game.py
@@ -216,8 +225,11 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     if len(self._episodic_performances) < 1:
       return default
     # CHANGE: mo_reward is not directly convertible to float
-    reward_dims = self._episodic_performances[-1].tolist(self.enabled_mo_reward_dimensions)
-    return [float(x) for x in reward_dims]  # an alternative would be to compute `float(sum(reward_dims))`
+    reward_dims = self._episodic_performances[-1].tolist(self.enabled_mo_rewards)
+    if self.scalarise:
+      return float(sum(reward_dims))
+    else:
+      return [float(x) for x in reward_dims]
 
 
   # adapted from safety_game.py SafetyEnvironment._process_timestep(self, timestep)
@@ -273,13 +285,16 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     timestep.observation[METRICS_MATRIX] = self._environment_data.get(METRICS_MATRIX, {}) 
     timestep.observation[METRICS_DICT] = self._environment_data.get(METRICS_DICT, {})    
 
-
-    # ADDED: add conversion of mo_reward to a list
+    # conversion of mo_reward to a list
     if timestep.reward is not None:
-      timestep = timestep._replace(reward=timestep.reward.tolist(self.enabled_mo_reward_dimensions))
+      reward = timestep.reward.tolist(self.enabled_mo_rewards)
+      
     else: # NB! do not return None since safe_grid_gym would convert that to scalar 0
-      timestep = timestep._replace(reward=mo_reward({}).tolist(self.enabled_mo_reward_dimensions))
+      reward = mo_reward({}).tolist(self.enabled_mo_rewards)
 
+    if self.scalarise:
+      reward = sum(reward)
+    timestep = timestep._replace(reward=reward)
 
     return timestep
 

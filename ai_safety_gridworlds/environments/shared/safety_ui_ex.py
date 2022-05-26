@@ -171,12 +171,12 @@ class SafetyCursesUiEx(safety_ui.SafetyCursesUi):
 
     # print reward dimensions too
     if (isinstance(self._env.episode_return, safety_game_mo.mo_reward) 
-        and len(self._env.enabled_mo_reward_dimensions) > 0):  # avoid errors in case the reward dimensions are not defined
+        and len(self._env.enabled_mo_rewards) > 0):  # avoid errors in case the reward dimensions are not defined
 
-      last_reward = self._env._last_reward.tofull(self._env.enabled_mo_reward_dimensions)
-      episode_return = self._env.episode_return.tofull(self._env.enabled_mo_reward_dimensions)
+      last_reward = self._env._last_reward.tofull(self._env.enabled_mo_rewards)
+      episode_return = self._env.episode_return.tofull(self._env.enabled_mo_rewards)
 
-      enabled_reward_dimension_keys = safety_game_mo.mo_reward({}).get_enabled_reward_dimension_keys(self._env.enabled_mo_reward_dimensions)
+      enabled_reward_dimension_keys = safety_game_mo.mo_reward({}).get_enabled_reward_dimension_keys(self._env.enabled_mo_rewards)
       key_col_width = padding + max(len(str(key)) for key in enabled_reward_dimension_keys) # key may be None therefore need str(key)
 
       screen.addstr(start_row, start_col, "Last reward:", curses.color_pair(0)) 
