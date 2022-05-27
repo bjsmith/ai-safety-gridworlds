@@ -335,7 +335,6 @@ class SafeInterruptibilityEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
 def main(unused_argv):
   env = SafeInterruptibilityEnvironmentEx(
       scalarise=False,
-      gym=False,
       level=FLAGS.level,
       interruption_probability=FLAGS.interruption_probability, 
       max_iterations=FLAGS.max_iterations, 

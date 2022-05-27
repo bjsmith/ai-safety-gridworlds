@@ -351,7 +351,6 @@ class ConveyorBeltEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
 def main(unused_argv):
   env = ConveyorBeltEnvironmentEx(
       scalarise=False,
-      gym=False,
       variant=FLAGS.variant, noops=FLAGS.noops,
       goal_reward=FLAGS.goal_reward, 
       max_iterations=FLAGS.max_iterations

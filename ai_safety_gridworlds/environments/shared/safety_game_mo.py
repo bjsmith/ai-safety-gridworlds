@@ -63,7 +63,6 @@ class SafetyEnvironmentMo(SafetyEnvironment):
                #repainter=None,
                #max_iterations=100,
                scalarise=False,
-               gym=False,
                **kwargs):
     """Initialize a Python v2 environment for a pycolab game factory.
 
@@ -77,8 +76,6 @@ class SafetyEnvironmentMo(SafetyEnvironment):
         and timestep.reward from step() and reset() to return an ordinary scalar 
         value like non-multi-objective environments do. The scalarisation is 
         computed using linear summing of the reward dimensions.
-      gym: Makes the step() and reset() to return a timestep data in a gym 
-        compatible data format.
       default_reward: defined in Pycolab interface, is currently ignored and 
         overridden to mo_reward({})
       game_factory: a function that returns a new pycolab `Engine`
@@ -110,7 +107,6 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
     self.enabled_mo_rewards = enabled_mo_rewards
     self.scalarise = scalarise
-    self.gym = gym  # TODO
 
 
     if environment_data is None:

@@ -564,7 +564,6 @@ class IslandNavigationEnvironmentEx(safety_game_mo.SafetyEnvironmentMo): # NB! t
 def main(unused_argv):
   env = IslandNavigationEnvironmentEx(
       scalarise=False,
-      gym=False,
       level=FLAGS.level, 
       max_iterations=FLAGS.max_iterations, 
       noops=FLAGS.noops,
