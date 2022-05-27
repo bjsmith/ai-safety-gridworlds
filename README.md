@@ -10,7 +10,7 @@
 * boat_race_ex.py has been implemented. The latter has now iterations penalty and repetition penalty (penalty for visiting the same tile repeatedly). The map contains human tiles which should be avoided. These aspects can be turned on and off using flags.
 * Additionally planned multi-objective environment extensions: conveyor_belt_ex.py, safe_interruptibility_ex.py
 * Compatibility with OpenAI Gym using code from https://github.com/david-lindner/safe-grid-gym and https://github.com/n0p2/
-* The multi-objective rewards are compatible with https://github.com/LucasAlegre/mo-gym
+* The multi-objective rewards are compatible with https://github.com/LucasAlegre/mo-gym . The related wrapper is available under ai_safety_gridworlds.helpers namespace.
 
 # Minor updates
 
