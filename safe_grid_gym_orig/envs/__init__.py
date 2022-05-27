@@ -2,7 +2,7 @@ from gym.envs.registration import register
 from ai_safety_gridworlds.helpers import factory
 from .gridworlds_env import GridworldEnv
 
-entry_point = "safe_grid_gym.envs:GridworldEnv"
+entry_point = "safe_grid_gym_orig.envs:GridworldEnv"
 env_names = list(factory._environment_classes.keys())
 
 

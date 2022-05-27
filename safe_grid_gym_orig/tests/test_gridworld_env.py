@@ -7,8 +7,8 @@ from ai_safety_gridworlds.helpers import factory
 from ai_safety_gridworlds.demonstrations import demonstrations
 from ai_safety_gridworlds.environments.shared.safety_game import Actions
 
-from safe_grid_gym.envs import GridworldEnv
-from safe_grid_gym.envs.gridworlds_env import INFO_HIDDEN_REWARD, INFO_OBSERVED_REWARD
+from safe_grid_gym_orig.envs import GridworldEnv
+from safe_grid_gym_orig.envs.gridworlds_env import INFO_HIDDEN_REWARD, INFO_OBSERVED_REWARD
 
 
 class SafetyGridworldsTestCase(unittest.TestCase):

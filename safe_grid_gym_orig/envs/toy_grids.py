@@ -1,6 +1,6 @@
 import numpy as np
 
-from safe_grid_gym.envs.common.base_gridworld import position_change, BaseGridworld
+from safe_grid_gym_orig.envs.common.base_gridworld import position_change, BaseGridworld
 
 GRID_SHAPE = (5, 5)
 

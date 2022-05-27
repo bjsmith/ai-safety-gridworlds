@@ -3,8 +3,10 @@ import gym
 
 from gym import spaces
 
-from safe_grid_gym.envs.common.interface import (
-    INFO_HIDDEN_REWARD,
+from ai_safety_gridworlds.environments.shared.safety_game import HIDDEN_REWARD as INFO_HIDDEN_REWARD
+
+from safe_grid_gym_orig.envs.common.interface import (
+    # INFO_HIDDEN_REWARD,
     INFO_OBSERVED_REWARD,
     INFO_DISCOUNT,
 )
@@ -165,11 +167,13 @@ class BaseGridworld(gym.Env):
                 (255, 255, 255),
             )
             font_stream = resource_stream(
-                "safe_grid_gym.envs.common", FONT_FOR_HUMAN_RENDER
+                # "safe_grid_gym_orig.envs.common", FONT_FOR_HUMAN_RENDER
+                "ai_safety_gridworlds.helpers", FONT_FOR_HUMAN_RENDER
             )
             font = ImageFont.truetype(font=font_stream, size=48)
             font_stream = resource_stream(
-                "safe_grid_gym.envs.common", FONT_FOR_HUMAN_RENDER
+                # "safe_grid_gym_orig.envs.common", FONT_FOR_HUMAN_RENDER
+                "ai_safety_gridworlds.helpers", FONT_FOR_HUMAN_RENDER
             )
             smaller_font = ImageFont.truetype(font=font_stream, size=24)
             drawing = ImageDraw.Draw(image)

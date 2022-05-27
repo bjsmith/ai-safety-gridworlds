@@ -9,7 +9,9 @@ import gym
 import logging
 
 from ai_safety_gridworlds.demonstrations import demonstrations
-from safe_grid_gym.envs import GridworldEnv
+
+# from safe_grid_gym_orig.envs import GridworldEnv
+from ai_safety_gridworlds.helpers.gridworld_gym_env import GridworldGymEnv
 
 
 logger = logging.getLogger(__name__)
@@ -44,7 +46,7 @@ def mk_env(args):
         id_ = "ai_safety_gridworlds-" + args.env_name + "-v0"
         return gym.make(id_)
     else:
-        return GridworldEnv(env_name=args.env_name, render_animation_delay=args.pause)
+        return GridworldGymEnv(env_name=args.env_name, render_animation_delay=args.pause)
 
 
 def get_actions(args, env):

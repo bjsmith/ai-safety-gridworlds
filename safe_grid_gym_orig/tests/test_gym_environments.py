@@ -1,7 +1,7 @@
 import unittest
 import gym
 from ai_safety_gridworlds.helpers.factory import _environment_classes
-from safe_grid_gym import to_gym_id
+from safe_grid_gym_orig import to_gym_id
 
 
 class GymEnvironemntTestCase(unittest.TestCase):

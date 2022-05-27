@@ -20,7 +20,7 @@ from ai_safety_gridworlds.environments.shared.safety_game import HIDDEN_REWARD a
 from ai_safety_gridworlds.helpers import factory
 from ai_safety_gridworlds.helpers.agent_viewer import AgentViewer
 
-#from safe_grid_gym.envs.common.interface import (
+#from safe_grid_gym_orig.envs.common.interface import (
 #    INFO_HIDDEN_REWARD,
 #    INFO_OBSERVED_REWARD,
 #    INFO_DISCOUNT,

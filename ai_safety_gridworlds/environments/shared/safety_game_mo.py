@@ -289,7 +289,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     # conversion of mo_reward to a np.array or float
     if timestep.reward is not None:
       reward_dims = timestep.reward.tolist(self.enabled_mo_rewards)      
-    else: # NB! do not return None since safe_grid_gym would convert that to scalar 0
+    else: # NB! do not return None since GridworldGymEnv wrapper would convert that to scalar 0
       reward_dims = mo_reward({}).tolist(self.enabled_mo_rewards)
 
     if self.scalarise:

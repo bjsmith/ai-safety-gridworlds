@@ -1,5 +1,5 @@
 import gym
-import safe_grid_gym
+import safe_grid_gym_orig
 
 # TODO: this does not seem to work
 # env = gym.make("ToyGridworldUncorrupted-v0")

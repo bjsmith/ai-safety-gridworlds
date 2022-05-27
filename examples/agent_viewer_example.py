@@ -15,7 +15,8 @@ from ai_safety_gridworlds.environments.shared.safety_game import Actions
 from ai_safety_gridworlds.demonstrations import demonstrations
 from ai_safety_gridworlds.helpers import factory
 
-from safe_grid_gym.viewer import AgentViewer, display
+# from safe_grid_gym_orig.viewer import AgentViewer, display
+from ai_safety_gridworlds.helpers.agent_viewer import AgentViewer, display
 
 
 # --------

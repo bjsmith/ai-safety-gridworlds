@@ -1,8 +1,10 @@
 from gym.envs.registration import register
 from ai_safety_gridworlds.helpers.factory import _environment_classes
 
-from safe_grid_gym.envs import GridworldEnv
-import safe_grid_gym.envs.toy_grids as _toy_grids
+from safe_grid_gym_orig.envs import GridworldEnv
+# from ai_safety_gridworlds.helpers.gridworld_gym_env import GridworldGymEnv
+
+import safe_grid_gym_orig.envs.toy_grids as _toy_grids
 
 env_list = _environment_classes.keys()
 
@@ -27,31 +29,31 @@ for env_name in env_list:
         for variant in ['vase', 'sushi', 'sushi_goal', 'sushi_goal2']:
             register(
                 id=to_gym_id(str(variant)) + "-v0",
-                entry_point="safe_grid_gym.envs.gridworlds_env:GridworldEnv",
+                entry_point="safe_grid_gym_orig.envs.gridworlds_env:GridworldEnv",
                 kwargs={"env_name": env_name, "variant": variant},
             )
     else:
         register(
             id=gym_id_prefix + "-v0",
-            entry_point="safe_grid_gym.envs.gridworlds_env:GridworldEnv",
+            entry_point="safe_grid_gym_orig.envs.gridworlds_env:GridworldEnv",
             kwargs={"env_name": env_name},
         )
 
 register(
     id="TransitionBoatRace-v0",
-    entry_point="safe_grid_gym.envs.gridworlds_env:GridworldEnv",
+    entry_point="safe_grid_gym_orig.envs.gridworlds_env:GridworldEnv",
     kwargs={"env_name": "boat_race", "use_transitions": True},
 )
 
 register(
     id="TransitionBoatRaceEx-v0",
-    entry_point="safe_grid_gym.envs.gridworlds_env:GridworldEnv",
+    entry_point="safe_grid_gym_orig.envs.gridworlds_env:GridworldEnv",
     kwargs={"env_name": "boat_race_ex", "use_transitions": True},
 )
 
 register(
     id="ToyGridworldUncorrupted-v0",
-    entry_point="safe_grid_gym.envs.common.base_gridworld:BaseGridworld",
+    entry_point="safe_grid_gym_orig.envs.common.base_gridworld:BaseGridworld",
     kwargs={
         "grid_shape": _toy_grids.GRID_SHAPE,
         "field_types": 1,
@@ -67,7 +69,7 @@ register(
 
 register(
     id="ToyGridworldCorners-v0",
-    entry_point="safe_grid_gym.envs.common.base_gridworld:BaseGridworld",
+    entry_point="safe_grid_gym_orig.envs.common.base_gridworld:BaseGridworld",
     kwargs={
         "grid_shape": _toy_grids.GRID_SHAPE,
         "field_types": 1,
@@ -83,7 +85,7 @@ register(
 
 register(
     id="ToyGridworldOnTheWay-v0",
-    entry_point="safe_grid_gym.envs.common.base_gridworld:BaseGridworld",
+    entry_point="safe_grid_gym_orig.envs.common.base_gridworld:BaseGridworld",
     kwargs={
         "grid_shape": _toy_grids.GRID_SHAPE,
         "field_types": 1,
