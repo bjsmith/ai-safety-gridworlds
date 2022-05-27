@@ -1,4 +1,4 @@
-# ai\_saf
+# ai\_safety\_gridworlds changelog
 
 ## Version 2.3.2 - Thursday 26. May 2022
 

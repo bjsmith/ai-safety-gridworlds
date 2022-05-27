@@ -6,6 +6,4 @@ __pycache__/
 *.bak
 *.*~
 *~
-
-/env_example.log
-/examples/agent_viewer_example.py.log
+*.log

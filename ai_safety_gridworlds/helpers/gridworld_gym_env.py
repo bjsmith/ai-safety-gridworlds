@@ -112,7 +112,6 @@ class GridworldGymEnv(gym.Env):
             INFO_OBSERVED_REWARD: reward,
             INFO_DISCOUNT: timestep.discount
         }
-        info.update({key: value for key, value in obs.items() if key not in info})  # ADDED
 
         for k, v in obs.items():
             if k not in ("board", "RGB"):
