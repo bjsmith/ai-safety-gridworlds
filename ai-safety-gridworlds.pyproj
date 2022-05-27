@@ -64,7 +64,9 @@
     <Compile Include="ai_safety_gridworlds\environments\tomato_watering.py" />
     <Compile Include="ai_safety_gridworlds\environments\whisky_gold.py" />
     <Compile Include="ai_safety_gridworlds\environments\__init__.py" />
+    <Compile Include="ai_safety_gridworlds\helpers\agent_viewer.py" />
     <Compile Include="ai_safety_gridworlds\helpers\factory.py" />
+    <Compile Include="ai_safety_gridworlds\helpers\gridworld_gym_env.py" />
     <Compile Include="ai_safety_gridworlds\helpers\__init__.py" />
     <Compile Include="ai_safety_gridworlds\tests\absent_supervisor_test.py" />
     <Compile Include="ai_safety_gridworlds\tests\boat_race_test.py" />
@@ -75,6 +77,7 @@
     <Compile Include="ai_safety_gridworlds\tests\rocks_diamonds_test.py" />
     <Compile Include="ai_safety_gridworlds\tests\safe_interruptibility_test.py" />
     <Compile Include="ai_safety_gridworlds\tests\side_effects_sokoban_test.py" />
+    <Compile Include="ai_safety_gridworlds\tests\gridworld_gym_env_test.py" />
     <Compile Include="ai_safety_gridworlds\tests\tomato_watering_test.py" />
     <Compile Include="ai_safety_gridworlds\tests\whisky_gold_test.py" />
     <Compile Include="ai_safety_gridworlds\tests\__init__.py" />

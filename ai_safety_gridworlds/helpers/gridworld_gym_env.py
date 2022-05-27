@@ -18,15 +18,19 @@ from gym.utils import seeding
 # from ai_safety_gridworlds.environments.shared.safety_game import EXTRA_OBSERVATIONS, HIDDEN_REWARD
 from ai_safety_gridworlds.environments.shared.safety_game import HIDDEN_REWARD as INFO_HIDDEN_REWARD
 from ai_safety_gridworlds.helpers import factory
-from safe_grid_gym.viewer import AgentViewer
-from safe_grid_gym.envs.common.interface import (
-    # INFO_HIDDEN_REWARD,
-    INFO_OBSERVED_REWARD,
-    INFO_DISCOUNT,
-)
+from ai_safety_gridworlds.helpers.agent_viewer import AgentViewer
+
+#from safe_grid_gym.envs.common.interface import (
+#    INFO_HIDDEN_REWARD,
+#    INFO_OBSERVED_REWARD,
+#    INFO_DISCOUNT,
+#)
+#INFO_HIDDEN_REWARD = "hidden_reward"
+INFO_OBSERVED_REWARD = "observed_reward"
+INFO_DISCOUNT = "discount"
 
 
-class GridworldEnv(gym.Env):
+class GridworldGymEnv(gym.Env):
     """ An OpenAI Gym environment wrapping the AI safety gridworlds created by DeepMind.
 
     Parameters:
@@ -106,7 +110,7 @@ class GridworldEnv(gym.Env):
         info = {
             INFO_HIDDEN_REWARD: hidden_reward,
             INFO_OBSERVED_REWARD: reward,
-            INFO_DISCOUNT: timestep.discount,
+            INFO_DISCOUNT: timestep.discount
         }
         info.update({key: value for key, value in obs.items() if key not in info})  # ADDED
 

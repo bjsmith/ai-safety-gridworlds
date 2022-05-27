@@ -44,6 +44,12 @@ register(
 )
 
 register(
+    id="TransitionBoatRaceEx-v0",
+    entry_point="safe_grid_gym.envs.gridworlds_env:GridworldEnv",
+    kwargs={"env_name": "boat_race_ex", "use_transitions": True},
+)
+
+register(
     id="ToyGridworldUncorrupted-v0",
     entry_point="safe_grid_gym.envs.common.base_gridworld:BaseGridworld",
     kwargs={

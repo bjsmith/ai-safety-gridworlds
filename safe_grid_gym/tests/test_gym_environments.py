@@ -14,6 +14,7 @@ class GymEnvironemntTestCase(unittest.TestCase):
         ]
 
         safety_gridworlds.append("TransitionBoatRace-v0")
+        safety_gridworlds.append("TransitionBoatRaceEx-v0")
 
         toy_gridworlds = [
             "ToyGridworldUncorrupted-v0",

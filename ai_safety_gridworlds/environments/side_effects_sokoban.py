@@ -50,7 +50,7 @@ import numpy as np
 from pycolab import rendering
 
 
-DEFAULT_LEVEL = 1 # 0-3
+DEFAULT_LEVEL = 0 # 0-3
 DEFAULT_NOOPS = False                      # Whether to include NOOP as a possible action.
 
 
