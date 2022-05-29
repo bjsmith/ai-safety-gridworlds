@@ -2,15 +2,15 @@
 
 * Refactored code for more consistency across environments. 
 * Added the following flags to more environments: level, max_iterations, noops. 
-* Added safety_ui_ex.make_human_curses_ui_with_noop_keys() method which enables human player to perform no-ops using keyboard. 
+* Added safety_ui_ex.make_human_curses_ui_with_noop_keys() method which enables human player to perform no-ops using keyboard. The RL agent had this capability in some environments already in the original code.
 * Added SafetyCursesUiEx class which enables printing various custom drape and sprite metrics on the screen. The metrics are also returned in timestep.observation under keys metrics_dict and metrics_matrix.
 * The multi-objective rewards are represented in vector form. The multi-objective environment constructor provides an additional option to automatically scalarise the rewards in order to return non-multi-objective-environment compatible values. This option is disabled by default. The scalarisation is computed using linear summing of the reward dimensions.
 * Started extending the maps and implementing multi-objective rewards for various environments.
 * island_navigation_ex.py has been implemented. The latter has now food and drink sources with satiation and deficit aspects in the agent, as well as sustainability aspect in the environment. Also, the environment has gold and silver sources. All these aspects can be turned on and off, as well as their parameters can be configured using flags.
 * boat_race_ex.py has been implemented. The latter has now iterations penalty and repetition penalty (penalty for visiting the same tile repeatedly). The map contains human tiles which should be avoided. These aspects can be turned on and off using flags.
 * Additionally planned multi-objective environment extensions: conveyor_belt_ex.py, safe_interruptibility_ex.py
-* Compatibility with OpenAI Gym using code from https://github.com/david-lindner/safe-grid-gym and https://github.com/n0p2/
-* The multi-objective rewards are compatible with https://github.com/LucasAlegre/mo-gym . The related wrapper is available under ai_safety_gridworlds.helpers namespace.
+* Compatibility with OpenAI Gym using code from https://github.com/david-lindner/safe-grid-gym and https://github.com/n0p2/ . The related wrapper is available under ai_safety_gridworlds.helpers namespace.
+* The multi-objective rewards are compatible with https://github.com/LucasAlegre/mo-gym
 
 # Minor updates
 

@@ -1,3 +1,7 @@
+# Copyright 2022 Roland Pihlakas. https://github.com/levitation-opensource/multiobjective-ai-safety-gridworlds
+# Copyright 2019 jvmncs https://github.com/jvmncs
+# Copyright 2018-2019 David Lindner https://github.com/david-lindner/safe-grid-gym
+
 import traceback
 import unittest
 import gym

@@ -1,4 +1,4 @@
-# Copyright 2022 Roland Pihlakas. All Rights Reserved.
+# Copyright 2022 Roland Pihlakas. https://github.com/levitation-opensource/multiobjective-ai-safety-gridworlds
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ class mo_reward(object):
     return mo_reward(dict_clone, immutable=False)
 
 
-  def get_enabled_reward_dimension_keys(self, enabled_mo_rewards):
+  def get_enabled_reward_dimension_keys(self, enabled_mo_rewards):  # TODO: make this function available to th RL code
     """Returns keys of all dimensions defined in enabled_mo_rewards.
 
     Args:
@@ -217,7 +217,7 @@ class mo_reward(object):
     return mo_reward({ key: value * other for key, value in self._reward_dimensions_dict.items() }, immutable=False)
 
 
-  def __imul__(self, other):  #in-place mul
+  def __imul__(self, other):  # in-place mul
 
     if self._immutable:
       return self.__mul__(other)
@@ -244,7 +244,7 @@ class mo_reward(object):
     return mo_reward({ key: value / other for key, value in self._reward_dimensions_dict.items() }, immutable=False)
 
 
-  def __itruediv__(self, other):  #in-place div
+  def __itruediv__(self, other):  # in-place div
 
     if self._immutable:
       return self.__truediv__(other)

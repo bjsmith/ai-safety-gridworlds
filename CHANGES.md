@@ -3,7 +3,7 @@
 ## Version 2.3.2 - Thursday 26. May 2022
 
 * Added "scalarise" argument to SafetyEnvironmentMo which makes the timestep.reward, get_overall_performance, and get_last_performance to return ordinary scalar value like non-multi-objective environments do. This option is disabled by default. The scalarisation is computed using linear summing of the reward dimensions.
-* The GridworldGymEnv wrapper and AgentViewer are now available under ai_safety_gridworlds.helpers namespace.
+* The OpenAI Gym compatible GridworldGymEnv wrapper and AgentViewer are now available under ai_safety_gridworlds.helpers namespace.
 
 ## Version 2.3.1 - Tuesday 24. May 2022
 
@@ -28,7 +28,7 @@
 
 * Refactored code for more consistency across environments. 
 * Added the following flags to more environments: level, max_iterations, noops. 
-* Added safety_ui_ex.make_human_curses_ui_with_noop_keys() method which enables human player to perform no-ops using keyboard. 
+* Added safety_ui_ex.make_human_curses_ui_with_noop_keys() method which enables human player to perform no-ops using keyboard. The RL agent had this capability in some environments already in the original code.
 * Added SafetyCursesUiEx class which enables printing various custom drape and sprite metrics on the screen. 
 * Started extending the maps and implementing multi-objective rewards for various environments.
 * island_navigation_ex.py has been implemented. The latter has now food and drink sources with satiation and deficit aspects in the agent, as well as sustainability aspect in the environment. Also, the environment has gold and silver sources. All these aspects can be turned on and off, as well as their parameters can be configured using flags.
