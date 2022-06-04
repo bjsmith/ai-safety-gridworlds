@@ -1,3 +1,4 @@
+# Copyright 2022 Roland Pihlakas. https://github.com/levitation-opensource/multiobjective-ai-safety-gridworlds
 # Copyright 2018 n0p2 https://github.com/n0p2/ai-safety-gridworlds-viewer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
