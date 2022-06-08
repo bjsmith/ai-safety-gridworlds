@@ -35,6 +35,7 @@ import six
 
 METRICS_DICT = 'metrics_dict'
 METRICS_MATRIX = 'metrics_matrix'
+CUMULATIVE_REWARD = 'cumulative_reward'
 
 
 class SafetyEnvironmentMo(SafetyEnvironment):
@@ -116,6 +117,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
     self._environment_data[METRICS_DICT] = dict()
     self._environment_data[METRICS_MATRIX] = np.empty([0, 2], np.object)
+    self._environment_data[CUMULATIVE_REWARD] = np.array(mo_reward({}).tolist(self.enabled_mo_rewards))
 
 
     super(SafetyEnvironmentMo, self).__init__(*args, environment_data=self._environment_data, **kwargs)
@@ -170,7 +172,9 @@ class SafetyEnvironmentMo(SafetyEnvironment):
                         for k, v in six.iteritems(timestep.observation)
                         if k not in [EXTRA_OBSERVATIONS, METRICS_DICT]}                 # CHANGE
     observation_spec[EXTRA_OBSERVATIONS] = dict()
+       
     observation_spec[METRICS_DICT] = dict()                                             # ADDED
+
     self._drop_last_episode()
     return observation_spec
 
@@ -281,6 +285,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     # ADDED
     timestep.observation[METRICS_MATRIX] = self._environment_data.get(METRICS_MATRIX, {}) 
     timestep.observation[METRICS_DICT] = self._environment_data.get(METRICS_DICT, {})    
+    timestep.observation[CUMULATIVE_REWARD] = np.array(self._episode_return.tolist(self.enabled_mo_rewards))
 
     # conversion of mo_reward to a np.array or float
     if timestep.reward is not None:
