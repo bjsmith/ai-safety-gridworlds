@@ -286,15 +286,30 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
 
   # adapted from SafetyEnvironment.reset() in ai_safety_gridworlds\environments\shared\safety_game.py and from Environment.reset() in ai_safety_gridworlds\environments\shared\rl\pycolab_interface.py
-  def reset(self):
+  def reset(self, trial_no=None):  # TODO!!! increment_trial_no
     """Start a new episode. 
-    Increment the episode counter if the previous game was played."""
+    Increment the episode counter if the previous game was played.
+    
+    trial_no: trial number. If not specified then previous trial_no is reused.
+    """
     # Environment._compute_observation_spec() -> Environment.reset() -> Engine.its_showtime() -> Engine.play() -> Engine._update_and_render() is called straight from the constructor of Environment therefore need to overwrite _the_plot variable here. Overwriting it in SafetyEnvironmentMo.__init__ would be too late
     
-    episode_no = getattr(self.__class__, "episode_no", 1)
-    if self._state != None and self._state != environment.StepType.FIRST:   # increment the episode_no only if the previous game was played, and not upon early or repeated reset() calls
-      episode_no += 1
-    setattr(self.__class__, "episode_no", episode_no)
+    if trial_no is not None:
+      prev_trial_no = getattr(self.__class__, "trial_no")
+      if prev_trial_no != trial_no: # if new trial is started then reset the episode_no counter
+        setattr(self.__class__, "trial_no", trial_no)
+
+        setattr(self.__class__, "episode_no", 1)
+        # use a different random number sequence for each trial
+        # at the same time use deterministic seed numbers so that if the trials are re-run then the results are same
+        np.random.seed(int(trial_no) & 0xFFFFFFFF)  # 0xFFFFFFFF: np.random.seed accepts 32-bit int only
+        # np.random.seed(int(time.time() * 10000000) & 0xFFFFFFFF)  # 0xFFFFFFFF: np.random.seed accepts 32-bit int only
+    else:
+      episode_no = getattr(self.__class__, "episode_no")
+      if self._state != None and self._state != environment.StepType.FIRST:   # increment the episode_no only if the previous game was played, and not upon early or repeated reset() calls
+        episode_no += 1
+        setattr(self.__class__, "episode_no", episode_no)
+
 
     # start of code adapted from from Environment.reset()
     # Build a new game and retrieve its first set of state/reward/discount.

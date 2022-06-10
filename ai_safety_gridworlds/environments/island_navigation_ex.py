@@ -588,24 +588,27 @@ def main(unused_argv):
     # LOG_METRICS,          # TODO
   ]
 
+  
+
+  env = IslandNavigationEnvironmentEx(
+    scalarise=False,
+    log_columns=log_columns,
+    log_arguments_to_separate_file=True,
+    level=FLAGS.level, 
+    max_iterations=FLAGS.max_iterations, 
+    noops=FLAGS.noops,
+    sustainability_challenge=FLAGS.sustainability_challenge,
+    thirst_hunger_death=FLAGS.thirst_hunger_death,
+    penalise_oversatiation=FLAGS.penalise_oversatiation
+  )
+
   for trial_no in range(0, 2):
 
-    env = IslandNavigationEnvironmentEx(
-      scalarise=False,
-      log_columns=log_columns,
-      log_arguments_to_separate_file=True,
-      trial_no=trial_no + 1,   # NB! provide only trial_no. episode_no is updated automatically
-      level=FLAGS.level, 
-      max_iterations=FLAGS.max_iterations, 
-      noops=FLAGS.noops,
-      sustainability_challenge=FLAGS.sustainability_challenge,
-      thirst_hunger_death=FLAGS.thirst_hunger_death,
-      penalise_oversatiation=FLAGS.penalise_oversatiation
-    )
+    env.reset(trial_no = trial_no + 1)  # NB! provide only trial_no. episode_no is updated automatically
 
     for episode_no in range(0, 2): 
 
-      env.reset()   # it would also ok to reset at the end of the loop, it will not mess up the episode counter
+      env.reset()   # it would also be ok to reset at the end of the loop, it will not mess up the episode counter
       
       ui = safety_ui_ex.make_human_curses_ui_with_noop_keys(GAME_BG_COLOURS, GAME_FG_COLOURS, noop_keys=FLAGS.noops)
       ui.play(env)

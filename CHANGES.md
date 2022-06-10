@@ -2,7 +2,7 @@
 
 ## Version 2.4.1 - Saturday 11. June 2022
 
-* Concatenate trial and episode logs into same CSV file. Move arguments to a separate txt file. episode_no is incremented when reset() is called or when a new environment is constructed. Add trial_no argument to SafetyEnvironmentMo constructor. Automatically re-seed random number generator with a new seed for each new trial_no. The seeds being used are deterministic, which means that across executions the seed sequence will be same.
+* Concatenate trial and episode logs into same CSV file. Move arguments to a separate txt file. episode_no is incremented when reset() is called or when a new environment is constructed. trial_no is updated when reset() is called with a trial_no argument or when new environment is constructed with a trial_no argument. Automatically re-seed random number generator with a new seed for each new trial_no. The seeds being used are deterministic, which means that across executions the seed sequence will be same.
 
 ## Version 2.4 - Friday 10. June 2022
 
