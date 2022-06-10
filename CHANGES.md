@@ -1,5 +1,13 @@
 # ai\_safety\_gridworlds changelog
 
+## Version 2.4 - Friday 10. June 2022
+
+* Added support for configurable logging of timestamp, environment_name, episode_no, iteration_no, arguments, reward_unit_sizes, reward, scalar_reward, cumulative_reward, scalar_cumulative_reward, metrics.
+
+## Version 2.3.3 - Wednesday 08. June 2022
+
+* The cumulative rewards are also returned, in timestep.observation, under key cumulative_reward.
+
 ## Version 2.3.2 - Thursday 26. May 2022
 
 * Added "scalarise" argument to SafetyEnvironmentMo which makes the timestep.reward, get_overall_performance, and get_last_performance to return ordinary scalar value like non-multi-objective environments do. This option is disabled by default. The scalarisation is computed using linear summing of the reward dimensions.

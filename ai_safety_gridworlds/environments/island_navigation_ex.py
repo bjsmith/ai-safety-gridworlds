@@ -39,6 +39,8 @@ from absl import flags
 from ai_safety_gridworlds.environments.shared import safety_game
 from ai_safety_gridworlds.environments.shared import safety_game_mo
 from ai_safety_gridworlds.environments.shared.safety_game_mo import METRICS_MATRIX
+from ai_safety_gridworlds.environments.shared.safety_game_mo import LOG_TIMESTAMP, LOG_ENVIRONMENT, LOG_EPISODE, LOG_ITERATION, LOG_ARGUMENTS, LOG_REWARD_UNITS, LOG_REWARD, LOG_SCALAR_REWARD, LOG_CUMULATIVE_REWARD, LOG_SCALAR_CUMULATIVE_REWARD, LOG_METRICS
+
 from ai_safety_gridworlds.environments.shared.mo_reward import mo_reward
 from ai_safety_gridworlds.environments.shared import safety_ui
 from ai_safety_gridworlds.environments.shared import safety_ui_ex
@@ -53,7 +55,7 @@ from pycolab import rendering
 
 
 DEFAULT_LEVEL = 3   # 0-6
-DEFAULT_MAX_ITERATIONS = 100
+DEFAULT_MAX_ITERATIONS = 10
 DEFAULT_NOOPS = True                      # Whether to include NOOP as a possible action.
 DEFAULT_SUSTAINABILITY_CHALLENGE = False  # Whether to deplete the drink and food resources irreversibly if they are consumed too fast.
 DEFAULT_THIRST_HUNGER_DEATH = False       # Whether the agent dies if it does not consume both the drink and food resources at regular intervals.
@@ -494,6 +496,9 @@ class IslandNavigationEnvironmentEx(safety_game_mo.SafetyEnvironmentMo): # NB! t
     Returns: A `Base` python environment interface for this game.
     """
 
+    log_arguments = dict(locals())
+    log_arguments.update(kwargs)
+
 
     value_mapping = {
         WALL_CHR: 0.0,
@@ -555,6 +560,7 @@ class IslandNavigationEnvironmentEx(safety_game_mo.SafetyEnvironmentMo): # NB! t
         actions=(min(action_set).value, max(action_set).value),
         value_mapping=value_mapping,
         max_iterations=max_iterations, 
+        log_arguments=log_arguments,
         **kwargs)
 
   #def _calculate_episode_performance(self, timestep):
@@ -566,8 +572,24 @@ class IslandNavigationEnvironmentEx(safety_game_mo.SafetyEnvironmentMo): # NB! t
 
 
 def main(unused_argv):
+
+  log_columns = [
+    LOG_TIMESTAMP,
+    LOG_ENVIRONMENT,
+    LOG_EPISODE,
+    LOG_ITERATION,
+    LOG_ARGUMENTS,    
+    # LOG_REWARD_UNITS,     # TODO
+    LOG_REWARD,
+    LOG_SCALAR_REWARD,
+    LOG_CUMULATIVE_REWARD,
+    LOG_SCALAR_CUMULATIVE_REWARD,
+    # LOG_METRICS,          # TODO
+  ]
+
   env = IslandNavigationEnvironmentEx(
       scalarise=False,
+      log_columns=log_columns,
       level=FLAGS.level, 
       max_iterations=FLAGS.max_iterations, 
       noops=FLAGS.noops,
@@ -577,6 +599,7 @@ def main(unused_argv):
   )
   ui = safety_ui_ex.make_human_curses_ui_with_noop_keys(GAME_BG_COLOURS, GAME_FG_COLOURS, noop_keys=FLAGS.noops)
   ui.play(env)
+
 
 if __name__ == '__main__':
   try:

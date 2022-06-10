@@ -19,6 +19,10 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import csv
+import datetime
+import os
+
 # Dependency imports
 from ai_safety_gridworlds.environments.shared.rl import array_spec as specs
 from ai_safety_gridworlds.environments.shared.rl import environment
@@ -36,6 +40,31 @@ import six
 METRICS_DICT = 'metrics_dict'
 METRICS_MATRIX = 'metrics_matrix'
 CUMULATIVE_REWARD = 'cumulative_reward'
+
+
+# timestamp, environment_name, episode_no, iteration_no, environment_flags, reward_unit_sizes, rewards, cumulative_rewards, metrics
+LOG_TIMESTAMP = 'timestamp'
+LOG_ENVIRONMENT = 'env'
+LOG_EPISODE = 'episode'
+LOG_ITERATION = 'iteration'
+LOG_ARGUMENTS = 'arguments'
+LOG_REWARD_UNITS = 'reward_unit'      # TODO
+LOG_REWARD = 'reward'
+LOG_SCALAR_REWARD = 'scalar_reward'
+LOG_CUMULATIVE_REWARD = 'cumulative_reward'
+LOG_SCALAR_CUMULATIVE_REWARD = 'scalar_cumulative_reward'
+LOG_METRICS = 'metrics'   # TODO
+
+
+log_arguments_to_skip = [
+  "__class__",
+  "kwargs",
+  "self",
+  "value_mapping", # TODO: option to include value_mapping in log_arguments
+  "log_columns",
+  "log_dir",
+  "log_arguments"
+]
 
 
 class SafetyEnvironmentMo(SafetyEnvironment):
@@ -64,6 +93,9 @@ class SafetyEnvironmentMo(SafetyEnvironment):
                #repainter=None,
                #max_iterations=100,
                scalarise=False,
+               log_columns=[],
+               log_dir="logs",
+               log_arguments=None,
                **kwargs):
     """Initialize a Python v2 environment for a pycolab game factory.
 
@@ -77,6 +109,9 @@ class SafetyEnvironmentMo(SafetyEnvironment):
         and timestep.reward from step() and reset() to return an ordinary scalar 
         value like non-multi-objective environments do. The scalarisation is 
         computed using linear summing of the reward dimensions.
+      log_columns: turns on CSV logging of specified column types (timestamp, environment_name, episode_no, iteration_no, environment_flags, reward_unit_sizes, reward, scalar_reward, cumulative_reward, scalar_cumulative_reward, metrics)
+      log_dir: directory to save log files to.
+      log_arguments: dictionary of environment arguments to log if LOG_ARGUMENTS is set in log_columns.
       default_reward: defined in Pycolab interface, is currently ignored and 
         overridden to mo_reward({})
       game_factory: a function that returns a new pycolab `Engine`
@@ -106,7 +141,19 @@ class SafetyEnvironmentMo(SafetyEnvironment):
       max_iterations: the maximum number of steps for one episode.
     """
 
+    if log_arguments is not None:
+      self.log_arguments = dict(log_arguments)
+    else:
+      self.log_arguments = dict(locals()) # need to clone using dict() else log_arguments.pop does not work
+      self.log_arguments.update(kwargs)
+
+    for key in log_arguments_to_skip:
+      self.log_arguments.pop(key, None)
+
+
     self.enabled_mo_rewards = enabled_mo_rewards
+    self.enabled_reward_dimension_keys = mo_reward({}).get_enabled_reward_dimension_keys(self.enabled_mo_rewards)
+
     self.scalarise = scalarise
 
 
@@ -120,10 +167,80 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     self._environment_data[CUMULATIVE_REWARD] = np.array(mo_reward({}).tolist(self.enabled_mo_rewards))
 
 
+    episode = getattr(self.__class__, "episode", 0)
+    episode += 1
+    setattr(self.__class__, "episode", episode)
+
+
+    classname = self.__class__.__name__
+    timestamp = datetime.datetime.now()
+    timestamp_str = datetime.datetime.strftime(timestamp, '%Y.%m.%d-%H.%M.%S')
+    self.log_filename = classname + "-" + str(episode) + "-" + timestamp_str + ".csv" 
+    self.log_dir = log_dir
+    self.log_columns = log_columns
+
+    if len(self.log_columns) > 0:
+
+      if self.log_dir and not os.path.exists(self.log_dir):
+        os.makedirs(self.log_dir)
+
+      # TODO: option to include log_arguments in filename
+
+      # if episode == 1:  # TODO: option to save all episodes to same file
+
+      with open(os.path.join(self.log_dir, self.log_filename), 'a', 1024 * 1024, newline='') as file:
+        writer = csv.writer(file, quoting=csv.QUOTE_NONNUMERIC, delimiter=';')
+
+        data = []
+        for col in self.log_columns:
+
+          if col == LOG_TIMESTAMP:
+            data.append(LOG_TIMESTAMP)
+
+          elif col == LOG_ENVIRONMENT:
+            data.append(LOG_ENVIRONMENT)
+
+          elif col == LOG_EPISODE:
+            data.append(LOG_EPISODE)
+
+          elif col == LOG_ITERATION:
+            data.append(LOG_ITERATION)
+
+          elif col == LOG_ARGUMENTS:
+            data.append(LOG_ARGUMENTS)
+
+          #elif col == LOG_REWARD_UNITS:      # TODO
+          #  data += [LOG_REWARD_UNITS + "_" + x for x in self.enabled_reward_dimension_keys]
+
+          elif col == LOG_REWARD:
+            data += [LOG_REWARD + "_" + x for x in self.enabled_reward_dimension_keys]
+
+          elif col == LOG_SCALAR_REWARD:
+            data.append(LOG_SCALAR_REWARD)
+
+          elif col == LOG_CUMULATIVE_REWARD:
+            data += [LOG_CUMULATIVE_REWARD + "_" + x for x in self.enabled_reward_dimension_keys]
+
+          elif col == LOG_SCALAR_CUMULATIVE_REWARD:
+            data.append(LOG_SCALAR_CUMULATIVE_REWARD)
+
+          #elif col == LOG_METRICS:   # TODO
+          #  data += self.metrics
+
+        writer.writerow(data)
+        
+    else:
+      self.log_filename = None
+
+
+    # self._init_done = False   # needed in order to skip logging during _compute_observation_spec() call
+
     super(SafetyEnvironmentMo, self).__init__(*args, environment_data=self._environment_data, **kwargs)
 
     # parent class safety_game.SafetyEnvironment sets default_reward=0
     self._default_reward = mo_reward({})  # TODO: consider default_reward argument's value
+
+    # self._init_done = True
 
 
   # adapted from SafetyEnvironment.reset() in ai_safety_gridworlds\environments\shared\safety_game.py and from Environment.reset() in ai_safety_gridworlds\environments\shared\rl\pycolab_interface.py
@@ -284,21 +401,81 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
     # ADDED
     timestep.observation[METRICS_MATRIX] = self._environment_data.get(METRICS_MATRIX, {}) 
-    timestep.observation[METRICS_DICT] = self._environment_data.get(METRICS_DICT, {})    
-    timestep.observation[CUMULATIVE_REWARD] = np.array(self._episode_return.tolist(self.enabled_mo_rewards))
+    timestep.observation[METRICS_DICT] = self._environment_data.get(METRICS_DICT, {})   
+    
+
+    cumulative_reward_dims = self._episode_return.tolist(self.enabled_mo_rewards)
+    scalar_cumulative_reward = sum(cumulative_reward_dims)
+
+    if self.scalarise:
+      cumulative_reward = float(scalar_cumulative_reward)
+    else:
+      cumulative_reward = np.array([float(x) for x in cumulative_reward_dims])
+
+    timestep.observation[CUMULATIVE_REWARD] = cumulative_reward
+
 
     # conversion of mo_reward to a np.array or float
     if timestep.reward is not None:
       reward_dims = timestep.reward.tolist(self.enabled_mo_rewards)      
     else: # NB! do not return None since GridworldGymEnv wrapper would convert that to scalar 0
       reward_dims = mo_reward({}).tolist(self.enabled_mo_rewards)
+    scalar_reward = sum(reward_dims)
 
     if self.scalarise:
-      reward = float(sum(reward_dims))
+      reward = float(scalar_reward)
     else:
       reward = np.array([float(x) for x in reward_dims])
 
     timestep = timestep._replace(reward=reward)
+
+
+    # if len(self.log_columns) > 0 and self._init_done:
+    if len(self.log_columns) > 0 and self._current_game.the_plot.frame > 0:
+
+      with open(os.path.join(self.log_dir, self.log_filename), 'a', 1024 * 1024, newline='') as file:
+        writer = csv.writer(file, quoting=csv.QUOTE_NONNUMERIC, delimiter=';')
+
+        data = []
+        for col in self.log_columns:
+
+          if col == LOG_TIMESTAMP:
+            timestamp = datetime.datetime.now()
+            timestamp_str = datetime.datetime.strftime(timestamp, '%Y.%m.%d-%H.%M.%S')
+            data.append(timestamp_str)
+
+          elif col == LOG_ENVIRONMENT:
+            data.append(self.__class__.__name__)
+
+          elif col == LOG_EPISODE:
+            data.append(getattr(self.__class__, "episode", 0))
+
+          elif col == LOG_ITERATION:
+            data.append(self._current_game.the_plot.frame)
+
+          elif col == LOG_ARGUMENTS:
+            data.append(str(self.log_arguments))  # option to log log_arguments as json   # TODO: stringify once in constructor only?
+
+          #elif col == LOG_REWARD_UNITS:      # TODO
+          #  data += self.reward_units
+
+          elif col == LOG_REWARD:
+            data += reward_dims
+
+          elif col == LOG_SCALAR_REWARD:
+            data.append(scalar_reward)
+
+          elif col == LOG_CUMULATIVE_REWARD:
+            data += cumulative_reward_dims
+
+          elif col == LOG_SCALAR_CUMULATIVE_REWARD:
+            data.append(scalar_cumulative_reward)
+
+          #elif col == LOG_METRICS:   # TODO
+          #  data += self.metrics
+
+        writer.writerow(data)
+
 
     return timestep
 

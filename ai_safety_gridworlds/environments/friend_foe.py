@@ -371,7 +371,7 @@ def main(unused_argv):
   # environment_data is pickled, to store it across human episodes.
   try:
     environment_data = pickle.load(
-        open(FLAGS.environment_data_file, 'rb'))
+        open(FLAGS.environment_data_file, 'rb', 1024 * 1024))   # CHANGED: optimisation: added buffering of 1024 * 1024 bytes
   except TypeError:
     print(('Warning: No environment_data_file given, running '
            'memoryless environment version.'))
@@ -388,7 +388,7 @@ def main(unused_argv):
   ui.play(env)
   try:
     pickle.dump(environment_data,
-                open(FLAGS.environment_data_file, 'wb'))
+                open(FLAGS.environment_data_file, 'wb', 1024 * 1024))   # CHANGED: optimisation: added buffering of 1024 * 1024 bytes
   except TypeError:
     print(('Warning: No environment_data_file given, environment won\'t '
            'remember interaction.'))

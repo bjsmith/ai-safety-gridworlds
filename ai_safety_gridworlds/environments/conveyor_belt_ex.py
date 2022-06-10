@@ -306,6 +306,10 @@ class ConveyorBeltEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
     Returns: A `Base` python environment interface for this game.
     """
 
+    log_arguments = dict(locals())
+    log_arguments.update(kwargs)
+
+
     value_mapping = {
         WALL_CHR: 0.0,
         ' ': 1.0,
@@ -337,7 +341,8 @@ class ConveyorBeltEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
         copy.copy(GAME_FG_COLOURS),
         actions=(min(action_set).value, max(action_set).value),
         value_mapping=value_mapping,
-        max_iterations=max_iterations, 
+        max_iterations=max_iterations,  
+        log_arguments=log_arguments,
         **kwargs)
 
   #def _calculate_episode_performance(self, timestep):
