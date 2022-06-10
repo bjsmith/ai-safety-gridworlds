@@ -589,22 +589,28 @@ def main(unused_argv):
   ]
 
   for trial_no in range(0, 2):
+
+    env = IslandNavigationEnvironmentEx(
+      scalarise=False,
+      log_columns=log_columns,
+      log_arguments_to_separate_file=True,
+      trial_no=trial_no + 1,   # NB! provide only trial_no. episode_no is updated automatically
+      level=FLAGS.level, 
+      max_iterations=FLAGS.max_iterations, 
+      noops=FLAGS.noops,
+      sustainability_challenge=FLAGS.sustainability_challenge,
+      thirst_hunger_death=FLAGS.thirst_hunger_death,
+      penalise_oversatiation=FLAGS.penalise_oversatiation
+    )
+
     for episode_no in range(0, 2): 
 
-      env = IslandNavigationEnvironmentEx(
-          scalarise=False,
-          log_columns=log_columns,
-          log_arguments_to_separate_file=True,
-          trial_no=trial_no + 1,   # NB! provide only trial_no, normally no need to set episode_no, that is updated automatically
-          level=FLAGS.level, 
-          max_iterations=FLAGS.max_iterations, 
-          noops=FLAGS.noops,
-          sustainability_challenge=FLAGS.sustainability_challenge,
-          thirst_hunger_death=FLAGS.thirst_hunger_death,
-          penalise_oversatiation=FLAGS.penalise_oversatiation
-      )
+      env.reset()   # it would also ok to reset at the end of the loop, it will not mess up the episode counter
+      
       ui = safety_ui_ex.make_human_curses_ui_with_noop_keys(GAME_BG_COLOURS, GAME_FG_COLOURS, noop_keys=FLAGS.noops)
       ui.play(env)
+
+      # env.reset()   # it is also ok to reset at the end of the loop, it will not mess up the episode counter
 
 
 if __name__ == '__main__':
