@@ -39,7 +39,7 @@ from absl import flags
 from ai_safety_gridworlds.environments.shared import safety_game
 from ai_safety_gridworlds.environments.shared import safety_game_mo
 from ai_safety_gridworlds.environments.shared.safety_game_mo import METRICS_MATRIX
-from ai_safety_gridworlds.environments.shared.safety_game_mo import LOG_TIMESTAMP, LOG_ENVIRONMENT, LOG_EPISODE, LOG_ITERATION, LOG_ARGUMENTS, LOG_REWARD_UNITS, LOG_REWARD, LOG_SCALAR_REWARD, LOG_CUMULATIVE_REWARD, LOG_SCALAR_CUMULATIVE_REWARD, LOG_METRICS
+from ai_safety_gridworlds.environments.shared.safety_game_mo import LOG_TIMESTAMP, LOG_ENVIRONMENT, LOG_TRIAL, LOG_EPISODE, LOG_ITERATION, LOG_ARGUMENTS, LOG_REWARD_UNITS, LOG_REWARD, LOG_SCALAR_REWARD, LOG_CUMULATIVE_REWARD, LOG_SCALAR_CUMULATIVE_REWARD, LOG_METRICS
 
 from ai_safety_gridworlds.environments.shared.mo_reward import mo_reward
 from ai_safety_gridworlds.environments.shared import safety_ui
@@ -574,31 +574,37 @@ class IslandNavigationEnvironmentEx(safety_game_mo.SafetyEnvironmentMo): # NB! t
 def main(unused_argv):
 
   log_columns = [
-    LOG_TIMESTAMP,
-    LOG_ENVIRONMENT,
-    LOG_EPISODE,
+    # LOG_TIMESTAMP,
+    # LOG_ENVIRONMENT,
+    LOG_TRIAL,       
+    LOG_EPISODE,        
     LOG_ITERATION,
-    LOG_ARGUMENTS,    
+    # LOG_ARGUMENTS,     
     # LOG_REWARD_UNITS,     # TODO
     LOG_REWARD,
-    LOG_SCALAR_REWARD,
+    # LOG_SCALAR_REWARD,
     LOG_CUMULATIVE_REWARD,
-    LOG_SCALAR_CUMULATIVE_REWARD,
+    # LOG_SCALAR_CUMULATIVE_REWARD,
     # LOG_METRICS,          # TODO
   ]
 
-  env = IslandNavigationEnvironmentEx(
-      scalarise=False,
-      log_columns=log_columns,
-      level=FLAGS.level, 
-      max_iterations=FLAGS.max_iterations, 
-      noops=FLAGS.noops,
-      sustainability_challenge=FLAGS.sustainability_challenge,
-      thirst_hunger_death=FLAGS.thirst_hunger_death,
-      penalise_oversatiation=FLAGS.penalise_oversatiation
-  )
-  ui = safety_ui_ex.make_human_curses_ui_with_noop_keys(GAME_BG_COLOURS, GAME_FG_COLOURS, noop_keys=FLAGS.noops)
-  ui.play(env)
+  for trial_no in range(0, 2):
+    for episode_no in range(0, 2): 
+
+      env = IslandNavigationEnvironmentEx(
+          scalarise=False,
+          log_columns=log_columns,
+          log_arguments_to_separate_file=True,
+          trial_no=trial_no + 1,   # NB! provide only trial_no, normally no need to set episode_no, that is updated automatically
+          level=FLAGS.level, 
+          max_iterations=FLAGS.max_iterations, 
+          noops=FLAGS.noops,
+          sustainability_challenge=FLAGS.sustainability_challenge,
+          thirst_hunger_death=FLAGS.thirst_hunger_death,
+          penalise_oversatiation=FLAGS.penalise_oversatiation
+      )
+      ui = safety_ui_ex.make_human_curses_ui_with_noop_keys(GAME_BG_COLOURS, GAME_FG_COLOURS, noop_keys=FLAGS.noops)
+      ui.play(env)
 
 
 if __name__ == '__main__':

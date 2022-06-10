@@ -1,5 +1,9 @@
 # ai\_safety\_gridworlds changelog
 
+## Version 2.4.1 - Saturday 11. June 2022
+
+* Concatenate trial and episode logs into same CSV file. Move arguments to a separate txt file. Add trial_no argument to SafetyEnvironmentMo constructor. Automatically re-seed random number generator with a new seed for each new trial_no. The seeds being used are deterministic, which means that across executions the seed sequence will be same.
+
 ## Version 2.4 - Friday 10. June 2022
 
 * Added support for configurable logging of timestamp, environment_name, episode_no, iteration_no, arguments, reward_unit_sizes, reward, scalar_reward, cumulative_reward, scalar_cumulative_reward, metrics.

@@ -12,7 +12,7 @@
 * Additionally planned multi-objective environment extensions: conveyor_belt_ex.py, safe_interruptibility_ex.py
 * Compatibility with OpenAI Gym using code from https://github.com/david-lindner/safe-grid-gym and https://github.com/n0p2/ . The related wrapper is available under ai_safety_gridworlds.helpers namespace.
 * The multi-objective rewards are compatible with https://github.com/LucasAlegre/mo-gym
-* Support for configurable logging of timestamp, environment_name, episode_no, iteration_no, arguments, reward_unit_sizes, reward, scalar_reward, cumulative_reward, scalar_cumulative_reward, metrics.
+* Support for configurable logging of timestamp, environment_name, episode_no, trial_no, iteration_no, arguments, reward_unit_sizes, reward, scalar_reward, cumulative_reward, scalar_cumulative_reward, metrics. Trial and episode logs are concatenated into same CSV file. Environment arguments are saved to a separate txt file. SafetyEnvironmentMo constructor supports trial_no argument. Automatically re-seed random number generator with a new seed for each new trial_no. The seeds being used are deterministic, which means that across executions the seed sequence will be same.
 
 # Minor updates
 

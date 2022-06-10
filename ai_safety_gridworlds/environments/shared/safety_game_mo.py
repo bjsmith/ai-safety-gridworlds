@@ -45,6 +45,7 @@ CUMULATIVE_REWARD = 'cumulative_reward'
 # timestamp, environment_name, episode_no, iteration_no, environment_flags, reward_unit_sizes, rewards, cumulative_rewards, metrics
 LOG_TIMESTAMP = 'timestamp'
 LOG_ENVIRONMENT = 'env'
+LOG_TRIAL = 'trial'
 LOG_EPISODE = 'episode'
 LOG_ITERATION = 'iteration'
 LOG_ARGUMENTS = 'arguments'
@@ -60,10 +61,14 @@ log_arguments_to_skip = [
   "__class__",
   "kwargs",
   "self",
+  "environment_data",
   "value_mapping", # TODO: option to include value_mapping in log_arguments
   "log_columns",
   "log_dir",
-  "log_arguments"
+  "log_arguments",
+  "log_arguments_to_separate_file",
+  "trial_no",
+  "episode_no"
 ]
 
 
@@ -96,6 +101,9 @@ class SafetyEnvironmentMo(SafetyEnvironment):
                log_columns=[],
                log_dir="logs",
                log_arguments=None,
+               log_arguments_to_separate_file=True,
+               trial_no=1,
+               episode_no=None,   # NB! normally no need to set episode_no, that is updated automatically
                **kwargs):
     """Initialize a Python v2 environment for a pycolab game factory.
 
@@ -109,9 +117,18 @@ class SafetyEnvironmentMo(SafetyEnvironment):
         and timestep.reward from step() and reset() to return an ordinary scalar 
         value like non-multi-objective environments do. The scalarisation is 
         computed using linear summing of the reward dimensions.
-      log_columns: turns on CSV logging of specified column types (timestamp, environment_name, episode_no, iteration_no, environment_flags, reward_unit_sizes, reward, scalar_reward, cumulative_reward, scalar_cumulative_reward, metrics)
+      log_columns: turns on CSV logging of specified column types (timestamp, 
+        environment_name, trial_no, episode_no, iteration_no, 
+        environment_arguments, reward_unit_sizes, reward, scalar_reward, 
+        cumulative_reward, scalar_cumulative_reward, metrics)
       log_dir: directory to save log files to.
-      log_arguments: dictionary of environment arguments to log if LOG_ARGUMENTS is set in log_columns.
+      log_arguments: dictionary of environment arguments to log if LOG_ARGUMENTS 
+        is set in log_columns.
+      log_arguments_to_separate_file: whether to log environment arguments to a 
+        separate file.
+      trial_no: trial number.
+      episode_no: episode number. Normally this is updated automatically and 
+        there is no need to provide episode_no.
       default_reward: defined in Pycolab interface, is currently ignored and 
         overridden to mo_reward({})
       game_factory: a function that returns a new pycolab `Engine`
@@ -167,15 +184,22 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     self._environment_data[CUMULATIVE_REWARD] = np.array(mo_reward({}).tolist(self.enabled_mo_rewards))
 
 
-    episode = getattr(self.__class__, "episode", 0)
-    episode += 1
-    setattr(self.__class__, "episode", episode)
+    prev_trial_no = getattr(self.__class__, "trial_no", -1)
+    setattr(self.__class__, "trial_no", trial_no)
+    
+    if episode_no is None:
+      if prev_trial_no != trial_no: # if new trial is started then reset the episode_no counter
+        episode_no = 0
+        # NB! use a different random number sequence for each trial
+        # NB! at the same time use deterministic seed numbers so that if the trials are re-run then the results are same
+        np.random.seed(int(trial_no) & 0xFFFFFFFF)  # 0xFFFFFFFF: np.random.seed accepts 32-bit int only
+        # np.random.seed(int(time.time() * 10000000) & 0xFFFFFFFF)  # 0xFFFFFFFF: np.random.seed accepts 32-bit int only
+      else:
+        episode_no = getattr(self.__class__, "episode_no", 0)
+      episode_no += 1
+    setattr(self.__class__, "episode_no", episode_no)
 
 
-    classname = self.__class__.__name__
-    timestamp = datetime.datetime.now()
-    timestamp_str = datetime.datetime.strftime(timestamp, '%Y.%m.%d-%H.%M.%S')
-    self.log_filename = classname + "-" + str(episode) + "-" + timestamp_str + ".csv" 
     self.log_dir = log_dir
     self.log_columns = log_columns
 
@@ -186,48 +210,68 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
       # TODO: option to include log_arguments in filename
 
-      # if episode == 1:  # TODO: option to save all episodes to same file
+      if prev_trial_no == -1:  # save all episodes and all trials to same file
 
-      with open(os.path.join(self.log_dir, self.log_filename), 'a', 1024 * 1024, newline='') as file:
-        writer = csv.writer(file, quoting=csv.QUOTE_NONNUMERIC, delimiter=';')
+        classname = self.__class__.__name__
+        timestamp = datetime.datetime.now()
+        timestamp_str = datetime.datetime.strftime(timestamp, '%Y.%m.%d-%H.%M.%S')
 
-        data = []
-        for col in self.log_columns:
+        # NB! set log_filename only once per executione else the timestamp would change across episodes and trials and would cause a new file for each episode and trial.
+        log_filename = classname + "-" + timestamp_str + ".csv"
+        setattr(self.__class__, "log_filename", log_filename)
+        arguments_filename = classname + "-arguments-" + timestamp_str + ".txt" 
 
-          if col == LOG_TIMESTAMP:
-            data.append(LOG_TIMESTAMP)
 
-          elif col == LOG_ENVIRONMENT:
-            data.append(LOG_ENVIRONMENT)
+        if log_arguments_to_separate_file:
+          with open(os.path.join(self.log_dir, arguments_filename), 'w', 1024 * 1024) as file:
+            print("{", file=file)   # using print() automatically generate newlines
+            for key, arg in self.log_arguments.items():
+              print("\t" + str(key) + ": " + str(arg) + ",", file=file)
+            print("}", file=file)
 
-          elif col == LOG_EPISODE:
-            data.append(LOG_EPISODE)
+        with open(os.path.join(self.log_dir, log_filename), 'a', 1024 * 1024, newline='') as file:   # csv writer creates its own newlines therefore need to set newline to empty string here
+          writer = csv.writer(file, quoting=csv.QUOTE_NONNUMERIC, delimiter=';')
 
-          elif col == LOG_ITERATION:
-            data.append(LOG_ITERATION)
+          data = []
+          for col in self.log_columns:
 
-          elif col == LOG_ARGUMENTS:
-            data.append(LOG_ARGUMENTS)
+            if col == LOG_TIMESTAMP:
+              data.append(LOG_TIMESTAMP)
 
-          #elif col == LOG_REWARD_UNITS:      # TODO
-          #  data += [LOG_REWARD_UNITS + "_" + x for x in self.enabled_reward_dimension_keys]
+            elif col == LOG_ENVIRONMENT:
+              data.append(LOG_ENVIRONMENT)
 
-          elif col == LOG_REWARD:
-            data += [LOG_REWARD + "_" + x for x in self.enabled_reward_dimension_keys]
+            elif col == LOG_TRIAL:
+              data.append(LOG_TRIAL)
 
-          elif col == LOG_SCALAR_REWARD:
-            data.append(LOG_SCALAR_REWARD)
+            elif col == LOG_EPISODE:
+              data.append(LOG_EPISODE)
 
-          elif col == LOG_CUMULATIVE_REWARD:
-            data += [LOG_CUMULATIVE_REWARD + "_" + x for x in self.enabled_reward_dimension_keys]
+            elif col == LOG_ITERATION:
+              data.append(LOG_ITERATION)
 
-          elif col == LOG_SCALAR_CUMULATIVE_REWARD:
-            data.append(LOG_SCALAR_CUMULATIVE_REWARD)
+            elif col == LOG_ARGUMENTS:
+              data.append(LOG_ARGUMENTS)
 
-          #elif col == LOG_METRICS:   # TODO
-          #  data += self.metrics
+            #elif col == LOG_REWARD_UNITS:      # TODO
+            #  data += [LOG_REWARD_UNITS + "_" + x for x in self.enabled_reward_dimension_keys]
 
-        writer.writerow(data)
+            elif col == LOG_REWARD:
+              data += [LOG_REWARD + "_" + x for x in self.enabled_reward_dimension_keys]
+
+            elif col == LOG_SCALAR_REWARD:
+              data.append(LOG_SCALAR_REWARD)
+
+            elif col == LOG_CUMULATIVE_REWARD:
+              data += [LOG_CUMULATIVE_REWARD + "_" + x for x in self.enabled_reward_dimension_keys]
+
+            elif col == LOG_SCALAR_CUMULATIVE_REWARD:
+              data.append(LOG_SCALAR_CUMULATIVE_REWARD)
+
+            #elif col == LOG_METRICS:   # TODO
+            #  data += self.metrics
+
+          writer.writerow(data)
         
     else:
       self.log_filename = None
@@ -433,7 +477,8 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     # if len(self.log_columns) > 0 and self._init_done:
     if len(self.log_columns) > 0 and self._current_game.the_plot.frame > 0:
 
-      with open(os.path.join(self.log_dir, self.log_filename), 'a', 1024 * 1024, newline='') as file:
+      log_filename = getattr(self.__class__, "log_filename")
+      with open(os.path.join(self.log_dir, log_filename), 'a', 1024 * 1024, newline='') as file:   # csv writer creates its own newlines therefore need to set newline to empty string here
         writer = csv.writer(file, quoting=csv.QUOTE_NONNUMERIC, delimiter=';')
 
         data = []
@@ -447,8 +492,11 @@ class SafetyEnvironmentMo(SafetyEnvironment):
           elif col == LOG_ENVIRONMENT:
             data.append(self.__class__.__name__)
 
+          elif col == LOG_TRIAL:
+            data.append(getattr(self.__class__, "trial_no"))
+
           elif col == LOG_EPISODE:
-            data.append(getattr(self.__class__, "episode", 0))
+            data.append(getattr(self.__class__, "episode_no"))
 
           elif col == LOG_ITERATION:
             data.append(self._current_game.the_plot.frame)
