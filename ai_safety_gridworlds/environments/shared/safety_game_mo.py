@@ -209,6 +209,9 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     # self._init_done = True
 
 
+    self.metrics_keys = list(self._environment_data.get(METRICS_DICT, {}).keys())
+
+
     self.log_dir = log_dir
     self.log_columns = log_columns
 
@@ -234,10 +237,23 @@ class SafetyEnvironmentMo(SafetyEnvironment):
         if log_arguments_to_separate_file:
           with open(os.path.join(self.log_dir, arguments_filename), 'w', 1024 * 1024) as file:
             print("{", file=file)   # using print() automatically generate newlines
+            
             for key, arg in self.log_arguments.items():
               print("\t" + str(key) + ": " + str(arg) + ",", file=file)
+            
+            print("\treward_dimensions: [", file=file)
+            for key in self.enabled_reward_dimension_keys:
+              print("\t\t" + str(key) + ",", file=file)
+            print("\t],", file=file)
+            
+            print("\tmetrics_keys: [", file=file)
+            for key in self.metrics_keys:
+              print("\t\t" + str(key) + ",", file=file)
+            print("\t],", file=file)
+
             print("}", file=file)
             # TODO: find a way to log reward unit sizes too
+
 
         with open(os.path.join(self.log_dir, log_filename), 'a', 1024 * 1024, newline='') as file:   # csv writer creates its own newlines therefore need to set newline to empty string here
           writer = csv.writer(file, quoting=csv.QUOTE_NONNUMERIC, delimiter=';')
@@ -278,9 +294,8 @@ class SafetyEnvironmentMo(SafetyEnvironment):
             elif col == LOG_SCALAR_CUMULATIVE_REWARD:
               data.append(LOG_SCALAR_CUMULATIVE_REWARD)
 
-            elif col == LOG_METRICS:
-              metrics = self._environment_data.get(METRICS_DICT, {})
-              data += [LOG_METRICS + "_" + x for x in metrics.keys()]
+            elif col == LOG_METRICS:              
+              data += [LOG_METRICS + "_" + x for x in self.metrics_keys]
 
           writer.writerow(data)
         
@@ -515,10 +530,10 @@ class SafetyEnvironmentMo(SafetyEnvironment):
             data.append(self.__class__.__name__)
 
           elif col == LOG_TRIAL:
-            data.append(getattr(self.__class__, "trial_no"))
+            data.append(self.get_trial_no())
 
           elif col == LOG_EPISODE:
-            data.append(getattr(self.__class__, "episode_no"))
+            data.append(self.get_episode_no())
 
           elif col == LOG_ITERATION:
             data.append(self._current_game.the_plot.frame)
@@ -542,10 +557,19 @@ class SafetyEnvironmentMo(SafetyEnvironment):
             data.append(scalar_cumulative_reward)
 
           elif col == LOG_METRICS:
-            data += list(timestep.observation[METRICS_DICT].values())
+            metrics = self._environment_data.get(METRICS_DICT, {})
+            data += [metrics.get(key, None) for key in self.metrics_keys]
 
         writer.writerow(data)
 
 
     return timestep
+
+
+  def get_trial_no(self):
+    return getattr(self.__class__, "trial_no")
+
+
+  def get_episode_no(self):
+    return getattr(self.__class__, "episode_no")
 
