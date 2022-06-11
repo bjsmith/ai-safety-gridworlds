@@ -54,7 +54,7 @@ LOG_REWARD = 'reward'
 LOG_SCALAR_REWARD = 'scalar_reward'
 LOG_CUMULATIVE_REWARD = 'cumulative_reward'
 LOG_SCALAR_CUMULATIVE_REWARD = 'scalar_cumulative_reward'
-LOG_METRICS = 'metrics'   # TODO
+LOG_METRICS = 'metric'
 
 
 log_arguments_to_skip = [
@@ -122,7 +122,9 @@ class SafetyEnvironmentMo(SafetyEnvironment):
         cumulative_reward, scalar_cumulative_reward, metrics)
       log_dir: directory to save log files to.
       log_arguments: dictionary of environment arguments to log if LOG_ARGUMENTS 
-        is set in log_columns.
+        is set in log_columns or if log_arguments_to_separate_file is True. If
+        log_arguments is None then all arguments are logged except the ones 
+        listed in log_arguments_to_skip.
       log_arguments_to_separate_file: whether to log environment arguments to a 
         separate file.
       trial_no: trial number.
@@ -187,14 +189,24 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     setattr(self.__class__, "trial_no", trial_no)
 
     if prev_trial_no != trial_no: # if new trial is started then reset the episode_no counter
-      setattr(self.__class__, "episode_no", 1)
+      setattr(self.__class__, "episode_no", 1)  # use static attribute so that the value survives re-construction of the environment
       # use a different random number sequence for each trial
       # at the same time use deterministic seed numbers so that if the trials are re-run then the results are same
       np.random.seed(int(trial_no) & 0xFFFFFFFF)  # 0xFFFFFFFF: np.random.seed accepts 32-bit int only
       # np.random.seed(int(time.time() * 10000000) & 0xFFFFFFFF)  # 0xFFFFFFFF: np.random.seed accepts 32-bit int only
     
     if episode_no is not None:
-      setattr(self.__class__, "episode_no", episode_no)
+      setattr(self.__class__, "episode_no", episode_no)  # use static attribute so that the value survives re-construction of the environment
+
+
+    # self._init_done = False   # needed in order to skip logging during _compute_observation_spec() call
+
+    super(SafetyEnvironmentMo, self).__init__(*args, environment_data=self._environment_data, **kwargs)
+
+    # parent class safety_game.SafetyEnvironment sets default_reward=0
+    self._default_reward = mo_reward({})  # TODO: consider default_reward argument's value
+
+    # self._init_done = True
 
 
     self.log_dir = log_dir
@@ -266,23 +278,14 @@ class SafetyEnvironmentMo(SafetyEnvironment):
             elif col == LOG_SCALAR_CUMULATIVE_REWARD:
               data.append(LOG_SCALAR_CUMULATIVE_REWARD)
 
-            #elif col == LOG_METRICS:   # TODO
-            #  data += self.metrics
+            elif col == LOG_METRICS:
+              metrics = self._environment_data.get(METRICS_DICT, {})
+              data += [LOG_METRICS + "_" + x for x in metrics.keys()]
 
           writer.writerow(data)
         
     else:
       self.log_filename = None
-
-
-    # self._init_done = False   # needed in order to skip logging during _compute_observation_spec() call
-
-    super(SafetyEnvironmentMo, self).__init__(*args, environment_data=self._environment_data, **kwargs)
-
-    # parent class safety_game.SafetyEnvironment sets default_reward=0
-    self._default_reward = mo_reward({})  # TODO: consider default_reward argument's value
-
-    # self._init_done = True
 
 
   # adapted from SafetyEnvironment.reset() in ai_safety_gridworlds\environments\shared\safety_game.py and from Environment.reset() in ai_safety_gridworlds\environments\shared\rl\pycolab_interface.py
@@ -493,8 +496,8 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     timestep = timestep._replace(reward=reward)
 
 
-    # if len(self.log_columns) > 0 and self._init_done:
-    if len(self.log_columns) > 0 and self._current_game.the_plot.frame > 0:
+    # if self._init_done and len(self.log_columns) > 0:
+    if self._current_game.the_plot.frame > 0 and len(self.log_columns) > 0:
 
       log_filename = getattr(self.__class__, "log_filename")
       with open(os.path.join(self.log_dir, log_filename), 'a', 1024 * 1024, newline='') as file:   # csv writer creates its own newlines therefore need to set newline to empty string here
@@ -538,8 +541,8 @@ class SafetyEnvironmentMo(SafetyEnvironment):
           elif col == LOG_SCALAR_CUMULATIVE_REWARD:
             data.append(scalar_cumulative_reward)
 
-          #elif col == LOG_METRICS:   # TODO
-          #  data += self.metrics
+          elif col == LOG_METRICS:
+            data += list(timestep.observation[METRICS_DICT].values())
 
         writer.writerow(data)
 

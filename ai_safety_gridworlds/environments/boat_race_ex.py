@@ -325,16 +325,39 @@ class BoatRaceEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
 
 
 def main(unused_argv):
+
+  log_columns = [
+    # LOG_TIMESTAMP,
+    # LOG_ENVIRONMENT,
+    LOG_TRIAL,       
+    LOG_EPISODE,        
+    LOG_ITERATION,
+    # LOG_ARGUMENTS,     
+    # LOG_REWARD_UNITS,     # TODO
+    LOG_REWARD,
+    LOG_SCALAR_REWARD,
+    LOG_CUMULATIVE_REWARD,
+    LOG_SCALAR_CUMULATIVE_REWARD,
+    LOG_METRICS,
+  ]
+
   env = BoatRaceEnvironmentEx(
-      scalarise=False,
-      level=FLAGS.level, 
-      max_iterations=FLAGS.max_iterations, 
-      noops=FLAGS.noops,
-      iterations_penalty=FLAGS.iterations_penalty,
-      repetition_penalty=FLAGS.repetition_penalty
+    scalarise=False,
+    log_columns=log_columns,
+    log_arguments_to_separate_file=True,
+    level=FLAGS.level, 
+    max_iterations=FLAGS.max_iterations, 
+    noops=FLAGS.noops,
+    iterations_penalty=FLAGS.iterations_penalty,
+    repetition_penalty=FLAGS.repetition_penalty
   )
-  ui = safety_ui_ex.make_human_curses_ui_with_noop_keys(GAME_BG_COLOURS, GAME_FG_COLOURS, noop_keys=FLAGS.noops)
-  ui.play(env)
+
+  for trial_no in range(0, 2):
+    env.reset(trial_no = trial_no + 1)  # NB! provide only trial_no. episode_no is updated automatically
+    for episode_no in range(0, 2): 
+      env.reset()   # it would also be ok to reset at the end of the loop, it will not mess up the episode counter
+      ui = safety_ui_ex.make_human_curses_ui_with_noop_keys(GAME_BG_COLOURS, GAME_FG_COLOURS, noop_keys=FLAGS.noops)
+      ui.play(env)
 
 if __name__ == '__main__':
   try:

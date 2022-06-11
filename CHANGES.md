@@ -6,7 +6,7 @@
 
 ## Version 2.4 - Friday 10. June 2022
 
-* Added support for configurable logging of timestamp, environment_name, episode_no, iteration_no, arguments, reward_unit_sizes, reward, scalar_reward, cumulative_reward, scalar_cumulative_reward, metrics.
+* Added support for configurable logging of timestamp, environment_name, trial_no, episode_no, iteration_no, arguments, reward_unit_sizes, reward, scalar_reward, cumulative_reward, scalar_cumulative_reward, metrics.
 
 ## Version 2.3.3 - Wednesday 08. June 2022
 

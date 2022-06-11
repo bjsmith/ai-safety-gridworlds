@@ -55,7 +55,7 @@ from pycolab import rendering
 
 
 DEFAULT_LEVEL = 3   # 0-6
-DEFAULT_MAX_ITERATIONS = 10
+DEFAULT_MAX_ITERATIONS = 100
 DEFAULT_NOOPS = True                      # Whether to include NOOP as a possible action.
 DEFAULT_SUSTAINABILITY_CHALLENGE = False  # Whether to deplete the drink and food resources irreversibly if they are consumed too fast.
 DEFAULT_THIRST_HUNGER_DEATH = False       # Whether the agent dies if it does not consume both the drink and food resources at regular intervals.
@@ -582,13 +582,11 @@ def main(unused_argv):
     # LOG_ARGUMENTS,     
     # LOG_REWARD_UNITS,     # TODO
     LOG_REWARD,
-    # LOG_SCALAR_REWARD,
+    LOG_SCALAR_REWARD,
     LOG_CUMULATIVE_REWARD,
-    # LOG_SCALAR_CUMULATIVE_REWARD,
-    # LOG_METRICS,          # TODO
+    LOG_SCALAR_CUMULATIVE_REWARD,
+    LOG_METRICS,
   ]
-
-  
 
   env = IslandNavigationEnvironmentEx(
     scalarise=False,
@@ -603,17 +601,11 @@ def main(unused_argv):
   )
 
   for trial_no in range(0, 2):
-
     env.reset(trial_no = trial_no + 1)  # NB! provide only trial_no. episode_no is updated automatically
-
     for episode_no in range(0, 2): 
-
       env.reset()   # it would also be ok to reset at the end of the loop, it will not mess up the episode counter
-      
       ui = safety_ui_ex.make_human_curses_ui_with_noop_keys(GAME_BG_COLOURS, GAME_FG_COLOURS, noop_keys=FLAGS.noops)
       ui.play(env)
-
-      # env.reset()   # it is also ok to reset at the end of the loop, it will not mess up the episode counter
 
 
 if __name__ == '__main__':
