@@ -129,8 +129,8 @@ class GridworldGymEnv(gym.Env):
 
         return (state, reward, done, info)
 
-    def reset(self, trial_no=None):                     # CHANGED: added trial_no
-        timestep = self._env.reset(trial_no=trial_no)   # CHANGED: added trial_no
+    def reset(self, *args, **kwargs):                     # CHANGED: added *args, **kwargs
+        timestep = self._env.reset(*args, **kwargs)       # CHANGED: added *args, **kwargs      
 
         self._rgb = timestep.observation["RGB"]
         if self._viewer is not None:
