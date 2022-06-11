@@ -129,8 +129,9 @@ class GridworldGymEnv(gym.Env):
 
         return (state, reward, done, info)
 
-    def reset(self):
-        timestep = self._env.reset()
+    def reset(self, trial_no=None):                     # CHANGED: added trial_no
+        timestep = self._env.reset(trial_no=trial_no)   # CHANGED: added trial_no
+
         self._rgb = timestep.observation["RGB"]
         if self._viewer is not None:
             self._viewer.reset_time()
@@ -144,6 +145,12 @@ class GridworldGymEnv(gym.Env):
             state = board[np.newaxis, :]
 
         return state
+
+    def get_trial_no(self):                             # ADDED
+      return self._env.get_trial_no()
+
+    def get_episode_no(self):                           # ADDED
+      return self._env.get_episode_no()
 
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
