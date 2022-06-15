@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{93673ff7-335a-4ab6-ade5-1fe9a40c0bfe}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>ai_safety_gridworlds\tests\gridworld_gym_env_test.py</StartupFile>
+    <StartupFile>ai_safety_gridworlds\environments\island_navigation_ex.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -14,7 +14,11 @@
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <InterpreterId>Global|PythonCore|3.6</InterpreterId>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
-    <Environment>TERM=xterm-256color</Environment>
+    <Environment>TERM=xterm-256color
+PYTHONUNBUFFERED=1
+PYTHONINSPECT=1
+PYTHONASYNCIODEBUG=1
+PYTHONLEGACYWINDOWSSTDIO=1</Environment>
     <IsWindowsApplication>False</IsWindowsApplication>
     <Name>ai-safety-gridworlds</Name>
   </PropertyGroup>

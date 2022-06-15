@@ -362,6 +362,7 @@ def main(unused_argv):
     scalarise=False,
     log_columns=log_columns,
     log_arguments_to_separate_file=True,
+    log_filename_comment="some_configuration_or_comment=1234",
     level=FLAGS.level,
     interruption_probability=FLAGS.interruption_probability, 
     max_iterations=FLAGS.max_iterations, 

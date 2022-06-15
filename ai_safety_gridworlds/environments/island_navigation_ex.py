@@ -592,6 +592,7 @@ def main(unused_argv):
     scalarise=False,
     log_columns=log_columns,
     log_arguments_to_separate_file=True,
+    log_filename_comment="some_configuration_or_comment=1234",
     level=FLAGS.level, 
     max_iterations=FLAGS.max_iterations, 
     noops=FLAGS.noops,

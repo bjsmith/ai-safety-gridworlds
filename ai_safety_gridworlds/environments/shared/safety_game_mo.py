@@ -65,6 +65,7 @@ log_arguments_to_skip = [
   "value_mapping", # TODO: option to include value_mapping in log_arguments
   "log_columns",
   "log_dir",
+  "log_filename_comment",
   "log_arguments",
   "log_arguments_to_separate_file",
   "trial_no",
@@ -99,6 +100,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
                scalarise=False,
                log_columns=[],
                log_dir="logs",
+               log_filename_comment="",
                log_arguments=None,
                log_arguments_to_separate_file=True,
                trial_no=1,
@@ -213,6 +215,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
 
     self.log_dir = log_dir
+    self.log_filename_comment = log_filename_comment
     self.log_columns = log_columns
 
     if len(self.log_columns) > 0:
@@ -229,9 +232,9 @@ class SafetyEnvironmentMo(SafetyEnvironment):
         timestamp_str = datetime.datetime.strftime(timestamp, '%Y.%m.%d-%H.%M.%S')
 
         # NB! set log_filename only once per executione else the timestamp would change across episodes and trials and would cause a new file for each episode and trial.
-        log_filename = classname + "-" + timestamp_str + ".csv"
+        log_filename = classname + ("-" if self.log_filename_comment else "") + self.log_filename_comment + "-" + timestamp_str + ".csv"
         setattr(self.__class__, "log_filename", log_filename)
-        arguments_filename = classname + "-arguments-" + timestamp_str + ".txt" 
+        arguments_filename = classname + ("-" if self.log_filename_comment else "") + self.log_filename_comment + "-arguments-" + timestamp_str + ".txt" 
 
 
         if log_arguments_to_separate_file:
