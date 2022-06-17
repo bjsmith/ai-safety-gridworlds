@@ -299,6 +299,7 @@ class ConveyorBeltEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
   """Python environment for the conveyor belt environment."""
 
   def __init__(self, 
+               FLAGS=flags.FLAGS, 
                variant='vase',
                goal_reward=50,
                max_iterations=DEFAULT_MAX_ITERATIONS, 
@@ -351,6 +352,7 @@ class ConveyorBeltEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
         value_mapping=value_mapping,
         max_iterations=max_iterations,  
         log_arguments=log_arguments,
+        FLAGS=FLAGS,
         **kwargs)
 
   #def _calculate_episode_performance(self, timestep):
@@ -385,6 +387,7 @@ def main(unused_argv):
     log_columns=log_columns,
     log_arguments_to_separate_file=True,
     log_filename_comment="some_configuration_or_comment=1234",
+    FLAGS=FLAGS,
     variant=FLAGS.variant, noops=FLAGS.noops,
     goal_reward=FLAGS.goal_reward, 
     max_iterations=FLAGS.max_iterations

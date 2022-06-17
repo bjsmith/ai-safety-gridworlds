@@ -642,6 +642,7 @@ class IslandNavigationEnvironmentEx(safety_game_mo.SafetyEnvironmentMo): # NB! t
         value_mapping=value_mapping,
         max_iterations=max_iterations, 
         log_arguments=log_arguments,
+        FLAGS=FLAGS,
         **kwargs)
 
   #def _calculate_episode_performance(self, timestep):

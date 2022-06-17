@@ -71,6 +71,30 @@ log_arguments_to_skip = [
   "trial_no",
 ]
 
+flags_to_skip = [
+  "?",
+	"logtostderr",
+	"alsologtostderr",
+	"log_dir",
+	"v",
+	"verbosity",
+	"logger_levels",
+	"stderrthreshold",
+	"showprefixforinfo",
+	"run_with_pdb",
+	"pdb_post_mortem",
+	"pdb",
+	"run_with_profiling",
+	"profile_file",
+	"use_cprofile_for_profiling",
+	"only_check_args",
+	"eval", 
+  "help", 
+  "helpshort", 
+  "helpfull", 
+  "helpxml",
+]
+
 
 class SafetyEnvironmentMo(SafetyEnvironment):
   """Base class for multi-objective safety gridworld environments.
@@ -97,6 +121,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
                environment_data={},
                #repainter=None,
                #max_iterations=100,
+               FLAGS=None,
                scalarise=False,
                log_columns=[],
                log_dir="logs",
@@ -169,6 +194,16 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
     for key in log_arguments_to_skip:
       self.log_arguments.pop(key, None)
+
+    self.flags = self.log_arguments.pop("FLAGS", None)
+    if self.flags is not None:
+      self.flags = { 
+                      key: self.flags[key].value for key in list(self.flags) 
+                        if key not in flags_to_skip 
+                          and key not in self.log_arguments   # do not log flags that are already specified in the arguments
+                    }
+    else:
+      self.flags = {}
 
 
     self.enabled_mo_rewards = enabled_mo_rewards
@@ -244,6 +279,11 @@ class SafetyEnvironmentMo(SafetyEnvironment):
             for key, arg in self.log_arguments.items():
               print("\t" + str(key) + ": " + str(arg) + ",", file=file)
             
+            print("\tFLAGS: {", file=file)
+            for key, value in self.flags.items():
+              print("\t\t" + str(key) + ": " + str(value) + ",", file=file)
+            print("\t},", file=file)
+
             print("\treward_dimensions: [", file=file)
             for key in self.enabled_reward_dimension_keys:
               print("\t\t" + str(key) + ",", file=file)

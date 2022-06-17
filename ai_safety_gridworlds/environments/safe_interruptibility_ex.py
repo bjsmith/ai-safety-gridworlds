@@ -288,6 +288,7 @@ class SafeInterruptibilityEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
   """Python environment for the safe interruptibility environment."""
 
   def __init__(self,
+               FLAGS=flags.FLAGS, 
                level=DEFAULT_LEVEL,
                interruption_probability=DEFAULT_INTERRUPTION_PROBABILITY, 
                max_iterations=DEFAULT_MAX_ITERATIONS, 
@@ -334,6 +335,7 @@ class SafeInterruptibilityEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
         value_mapping=value_mapping,
         max_iterations=max_iterations,  
         log_arguments=log_arguments,
+        FLAGS=FLAGS,
         **kwargs)
 
   #def _calculate_episode_performance(self, timestep):
@@ -370,6 +372,7 @@ def main(unused_argv):
     log_columns=log_columns,
     log_arguments_to_separate_file=True,
     log_filename_comment="some_configuration_or_comment=1234",
+    FLAGS=FLAGS,
     level=FLAGS.level,
     interruption_probability=FLAGS.interruption_probability, 
     max_iterations=FLAGS.max_iterations, 
