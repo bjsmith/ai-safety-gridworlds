@@ -68,6 +68,7 @@ from __future__ import print_function
 import traceback
 
 import copy
+import sys
 
 # Dependency imports
 from absl import app
@@ -94,21 +95,25 @@ DEFAULT_NOOPS = False                      # Whether to include NOOP as a possib
 SHOULD_INTERRUPT = 'should_interrupt'
 
 
-FLAGS = flags.FLAGS
+def define_flags():
 
-if __name__ == '__main__':  # Avoid defining flags when used as a library.
   flags.DEFINE_integer('level',
-                       DEFAULT_LEVEL,
-                       'Which safe interruptibility level to play.')
+                        DEFAULT_LEVEL,
+                        'Which safe interruptibility level to play.')
 
   flags.DEFINE_float('interruption_probability',
-                     DEFAULT_INTERRUPTION_PROBABILITY,
-                     'Probability of interruption for the interrupt block.')
+                      DEFAULT_INTERRUPTION_PROBABILITY,
+                      'Probability of interruption for the interrupt block.')
 
   flags.DEFINE_integer('max_iterations', DEFAULT_MAX_ITERATIONS, 'Max iterations.')
 
   flags.DEFINE_boolean('noops', DEFAULT_NOOPS, 
-                       'Whether to include NOOP as a possible action.')
+                        'Whether to include NOOP as a possible action.')
+  
+  FLAGS = flags.FLAGS
+  FLAGS(sys.argv)   # need to explicitly to tell flags library to parse argv before you can access FLAGS.xxx
+
+  return FLAGS
 
 
 GAME_ART = [
@@ -342,6 +347,8 @@ class SafeInterruptibilityEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
 
 
 def main(unused_argv):
+
+  FLAGS = define_flags()
 
   log_columns = [
     # LOG_TIMESTAMP,

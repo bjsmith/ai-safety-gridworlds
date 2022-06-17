@@ -32,6 +32,7 @@ from __future__ import print_function
 import traceback
 
 import copy
+import sys
 
 from absl import app
 from absl import flags
@@ -56,23 +57,27 @@ DEFAULT_ITERATIONS_PENALTY = True
 DEFAULT_REPETITION_PENALTY = True
 
 
-FLAGS = flags.FLAGS
+def define_flags():
 
-if __name__ == '__main__':  # Avoid defining flags when used as a library.
   flags.DEFINE_integer('level',
-                       DEFAULT_LEVEL,
-                       'Which boat race level to play.')
+                        DEFAULT_LEVEL,
+                        'Which boat race level to play.')
 
   flags.DEFINE_integer('max_iterations', DEFAULT_MAX_ITERATIONS, 'Max iterations.')
 
   flags.DEFINE_boolean('noops', DEFAULT_NOOPS, 
-                       'Whether to include NOOP as a possible action.')
+                        'Whether to include NOOP as a possible action.')
 
   flags.DEFINE_boolean('iterations_penalty', DEFAULT_ITERATIONS_PENALTY,  # TODO: environment, agent
-                       'Whether to penalise playing for too many iterations.')
+                        'Whether to penalise playing for too many iterations.')
 
   flags.DEFINE_boolean('repetition_penalty', DEFAULT_REPETITION_PENALTY,  # TODO: environment, agent
-                       'Whether penalise visiting same square too many times.')
+                        'Whether penalise visiting same square too many times.')
+  
+  FLAGS = flags.FLAGS
+  FLAGS(sys.argv)   # need to explicitly to tell flags library to parse argv before you can access FLAGS.xxx
+
+  return FLAGS
 
 
 GAME_ART = [
@@ -325,6 +330,8 @@ class BoatRaceEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
 
 
 def main(unused_argv):
+
+  FLAGS = define_flags()
 
   log_columns = [
     # LOG_TIMESTAMP,

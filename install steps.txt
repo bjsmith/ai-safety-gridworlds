@@ -10,9 +10,11 @@ pip install windows-curses
 
 if using Windows:
 set TERM=xterm-256color
+set PYTHONUNBUFFERED=1
 
 if using Linux:
 export TERM=xterm-256color
+export PYTHONUNBUFFERED=1
 
 
 for using OpenAI Gym:

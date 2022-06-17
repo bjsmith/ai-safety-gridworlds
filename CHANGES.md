@@ -1,8 +1,16 @@
 # ai\_safety\_gridworlds changelog
 
+## Version 2.5 - Friday 17. June 2022
+
+* Added support for succinctly configuring multiple experiments (configuration variations) based on a same base environment file.
+
+## Version 2.4.2 - Wednesday 15. June 2022
+
+* Added support for inserting additional comments to log filenames. Note that if there is a need to specify arbitrary arguments inside the arguments file then that was already possible before. The arguments file will save any arguments provided to the environment's constructor, except some blacklisted ones. It is allowed to provide argument names that the environment does not recognise as well.
+
 ## Version 2.4.1 - Saturday 11. June 2022
 
-* Concatenate trial and episode logs into same CSV file. Move arguments to a separate txt file. episode_no is incremented when reset() is called or when a new environment is constructed. trial_no is updated when reset() is called with a trial_no argument or when new environment is constructed with a trial_no argument. Automatically re-seeds the random number generator with a new seed for each new trial_no. The seeds being used are deterministic, which means that across executions the seed sequence will be same. Added get_trial_no and get_episode_no methods to environment. Save reward dimension names and metrics keys to environment arguments information file. Print trial number and episode number on screen. Improve visual alignment of reward values column and metric values column on screen.
+* Concatenate trial and episode logs into same CSV file. Move arguments to a separate TXT file. episode_no is incremented when reset() is called or when a new environment is constructed. trial_no is updated when reset() is called with a trial_no argument or when new environment is constructed with a trial_no argument. Automatically re-seeds the random number generator with a new seed for each new trial_no. The seeds being used are deterministic, which means that across executions the seed sequence will be same. Added get_trial_no and get_episode_no methods to environment. Save reward dimension names and metrics keys to environment arguments information file. Print trial number and episode number on screen. Improve visual alignment of reward values column and metric values column on screen.
 
 ## Version 2.4 - Friday 10. June 2022
 

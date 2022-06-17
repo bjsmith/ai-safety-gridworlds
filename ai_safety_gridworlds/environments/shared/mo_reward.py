@@ -18,7 +18,9 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from ast import literal_eval
 import itertools
+# import json
 
 # Dependency imports
 import numpy as np
@@ -38,7 +40,19 @@ class mo_reward(object):
     return mo_reward(dict_clone, immutable=False)
 
 
-  def get_enabled_reward_dimension_keys(self, enabled_mo_rewards):  # TODO: make this function available to th RL code
+  @staticmethod
+  def parse(string):
+
+    if string == "":
+      return mo_reward({})
+    else:
+      object = literal_eval(string)
+      # object = json.loads(string.replace("'", '"')) # mo_reward input python dictionary string is similar to json
+      return mo_reward(object)
+
+
+  @staticmethod
+  def get_enabled_reward_dimension_keys(enabled_mo_rewards):  # TODO: make this function available to the RL code
     """Returns keys of all dimensions defined in enabled_mo_rewards.
 
     Args:
@@ -69,11 +83,11 @@ class mo_reward(object):
 
     else: # if enabled_mo_rewards is not None:
 
-      enabled_reward_dimension_keys = self.get_enabled_reward_dimension_keys(enabled_mo_rewards)
+      enabled_reward_dimension_keys = mo_reward.get_enabled_reward_dimension_keys(enabled_mo_rewards)
 
-      for key in self._reward_dimensions_dict.keys():
-        if key not in enabled_reward_dimension_keys:
-          raise ValueError("Reward %s is not enabled but is still included in mo_reward" % key)
+      for key, value in self._reward_dimensions_dict.items():
+        if value != 0 and key not in enabled_reward_dimension_keys:
+          raise ValueError("Reward %s is not enabled but is still included in mo_reward with nonzero value" % key)
 
       result = [0] * len(enabled_reward_dimension_keys)
       for dimension_index, enabled_reward_dimension_key in enumerate(enabled_reward_dimension_keys):
@@ -91,11 +105,11 @@ class mo_reward(object):
 
     else: # if enabled_mo_rewards is not None:
 
-      enabled_reward_dimension_keys = self.get_enabled_reward_dimension_keys(enabled_mo_rewards)
+      enabled_reward_dimension_keys = mo_reward.get_enabled_reward_dimension_keys(enabled_mo_rewards)
 
-      for key in self._reward_dimensions_dict.keys():
-        if key not in enabled_reward_dimension_keys:
-          raise ValueError("Reward %s is not enabled but is still included in mo_reward" % key)
+      for key, value in self._reward_dimensions_dict.items():
+        if value != 0 and key not in enabled_reward_dimension_keys:
+          raise ValueError("Reward %s is not enabled but is still included in mo_reward with nonzero value" % key)
 
       result = {}
       for enabled_reward_dimension_key in enabled_reward_dimension_keys:
@@ -103,14 +117,24 @@ class mo_reward(object):
       return result
 
 
-  def __str__(self): # tostring
+  def __str__(self, enabled_mo_rewards=None): # tostring
 
-    return str(self._reward_dimensions_dict)
+    if enabled_mo_rewards is not None:
+      enabled_reward_dimension_keys = mo_reward.get_enabled_reward_dimension_keys(enabled_mo_rewards)
+      dict_with_enabled_keys = { key: self._reward_dimensions_dict.get(key, 0) for key in enabled_reward_dimension_keys }
+      return str(dict_with_enabled_keys)
+    else:
+      return str({ key: value for key, value in self._reward_dimensions_dict.items() if value != 0 })
 
 
-  def __repr__(self): # tostring
+  def __repr__(self, enabled_mo_rewards=None): # tostring
 
-    return "<" + repr(self._reward_dimensions_dict) + ">"
+    if enabled_mo_rewards is not None:
+      enabled_reward_dimension_keys = mo_reward.get_enabled_reward_dimension_keys(enabled_mo_rewards)
+      dict_with_enabled_keys = { key: self._reward_dimensions_dict.get(key, 0) for key in enabled_reward_dimension_keys }
+      return "<" + repr(dict_with_enabled_keys) + ">"
+    else:
+      return "<" + repr({ key: value for key, value in self._reward_dimensions_dict.items() if value != 0 }) + ">"
 
 
   def __add__(self, other):

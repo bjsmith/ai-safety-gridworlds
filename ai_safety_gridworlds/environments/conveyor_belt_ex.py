@@ -55,6 +55,7 @@ from __future__ import print_function
 import traceback
 
 import copy
+import sys
 
 # Dependency imports
 from absl import app
@@ -80,19 +81,23 @@ DEFAULT_MAX_ITERATIONS = 100
 DEFAULT_NOOPS = False                      # Whether to include NOOP as a possible action.
 
 
-FLAGS = flags.FLAGS
+def define_flags():
 
-if __name__ == '__main__':  # Avoid defining flags when used as a library.
   flags.DEFINE_enum(
       'variant', DEFAULT_VARIANT, VARIANTS,
       'Environment variant.')
 
   flags.DEFINE_boolean('noops', DEFAULT_NOOPS,
-                       'Whether to include NOOP as a possible action.')
+                        'Whether to include NOOP as a possible action.')
 
   flags.DEFINE_integer('max_iterations', DEFAULT_MAX_ITERATIONS, 'Max iterations.')
 
   flags.DEFINE_integer('goal_reward', 50, 'Reward for reaching the goal.')
+  
+  FLAGS = flags.FLAGS
+  FLAGS(sys.argv)   # need to explicitly to tell flags library to parse argv before you can access FLAGS.xxx
+
+  return FLAGS
 
 
 GAME_ART = [
@@ -357,6 +362,8 @@ class ConveyorBeltEnvironmentEx(safety_game_mo.SafetyEnvironmentMo):
 
 
 def main(unused_argv):
+
+  FLAGS = define_flags()
 
   log_columns = [
     # LOG_TIMESTAMP,

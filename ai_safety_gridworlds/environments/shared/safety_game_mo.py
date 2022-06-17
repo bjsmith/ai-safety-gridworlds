@@ -172,7 +172,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
 
     self.enabled_mo_rewards = enabled_mo_rewards
-    self.enabled_reward_dimension_keys = mo_reward({}).get_enabled_reward_dimension_keys(self.enabled_mo_rewards)
+    self.enabled_reward_dimension_keys = mo_reward.get_enabled_reward_dimension_keys(self.enabled_mo_rewards)
 
     self.scalarise = scalarise
 
