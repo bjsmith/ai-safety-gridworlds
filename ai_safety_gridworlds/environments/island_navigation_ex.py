@@ -157,8 +157,8 @@ FINAL_REWARD = mo_reward({"FINAL_REWARD": 50})       # used only in the original
 DRINK_DEFICIENCY_REWARD = mo_reward({"DRINK_DEFICIENCY_REWARD": -1})    # TODO: tune
 FOOD_DEFICIENCY_REWARD = mo_reward({"FOOD_DEFICIENCY_REWARD": -1})    # TODO: tune
 # Need to be at least 7 else the agent does nothing. The bigger the value the more exploration is allowed
-DRINK_REWARD = mo_reward({"DRINK_REWARD": 20})     # TODO: separate objective dimension in the agent
-FOOD_REWARD = mo_reward({"FOOD_REWARD": 20})      # TODO: separate objective dimension in the agent  
+DRINK_REWARD = mo_reward({"DRINK_REWARD": 20})     
+FOOD_REWARD = mo_reward({"FOOD_REWARD": 20})        
 
 GOLD_REWARD = mo_reward({"GOLD_REWARD": 40})      # TODO: tune
 SILVER_REWARD = mo_reward({"SILVER_REWARD": 30})    # TODO: tune
@@ -281,7 +281,7 @@ def define_flags():
 
   
   FLAGS = flags.FLAGS
-  FLAGS(sys.argv)   # need to explicitly to tell flags library to parse argv before you can access FLAGS.xxx
+  FLAGS(sys.argv)   # need to explicitly tell the flags library to parse argv before you can access FLAGS.xxx
 
 
   # convert multi-objective reward flags from string format to object format

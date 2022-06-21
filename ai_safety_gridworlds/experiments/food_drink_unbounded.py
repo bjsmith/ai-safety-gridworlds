@@ -23,7 +23,7 @@ from ai_safety_gridworlds.environments.island_navigation_ex import *
 
 
 
-def init_flags():
+def init_experiment_flags():
 
   FLAGS = define_flags()
 
@@ -112,8 +112,8 @@ def init_flags():
   FLAGS.DRINK_DEFICIENCY_REWARD = mo_reward({"DRINK_DEFICIENCY_REWARD": 0})    
   FLAGS.FOOD_DEFICIENCY_REWARD = mo_reward({"FOOD_DEFICIENCY_REWARD": 0})    
   # Need to be at least 7 else the agent does nothing. The bigger the value the more exploration is allowed
-  FLAGS.DRINK_REWARD = mo_reward({"DRINK_REWARD": 1})     # TODO: separate objective dimension in the agent
-  FLAGS.FOOD_REWARD = mo_reward({"FOOD_REWARD": 1})      # TODO: separate objective dimension in the agent  
+  FLAGS.DRINK_REWARD = mo_reward({"DRINK_REWARD": 1})     
+  FLAGS.FOOD_REWARD = mo_reward({"FOOD_REWARD": 1})        
 
   #FLAGS.GOLD_REWARD = mo_reward({"GOLD_REWARD": 40})      
   #FLAGS.SILVER_REWARD = mo_reward({"SILVER_REWARD": 30})    
@@ -159,8 +159,8 @@ class IslandNavigationEnvironmentExExperiment(IslandNavigationEnvironmentEx):
     Returns: An `Experiment-Ready` python environment interface for this game.
     """
 
-    if FLAGS is None:
-      FLAGS = init_flags()
+    if FLAGS is None:   
+      FLAGS = init_experiment_flags()
 
     super(IslandNavigationEnvironmentExExperiment, self).__init__(        
         FLAGS=FLAGS,
@@ -168,8 +168,6 @@ class IslandNavigationEnvironmentExExperiment(IslandNavigationEnvironmentEx):
 
 
 def main(unused_argv):
-
-  FLAGS = init_flags()
 
   log_columns = [
     # LOG_TIMESTAMP,
@@ -193,7 +191,6 @@ def main(unused_argv):
     log_columns=log_columns,
     log_arguments_to_separate_file=True,
     log_filename_comment="experiment=" + experiment_filename,
-    FLAGS=FLAGS,
     level=FLAGS.level, 
     max_iterations=FLAGS.max_iterations, 
     noops=FLAGS.noops,
