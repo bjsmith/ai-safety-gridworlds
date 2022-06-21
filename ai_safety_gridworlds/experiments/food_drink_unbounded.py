@@ -162,15 +162,19 @@ class IslandNavigationEnvironmentExExperiment(IslandNavigationEnvironmentEx):
     if FLAGS is None:   
       FLAGS = init_experiment_flags()
 
+    args = {
+        "level": FLAGS.level, 
+        "max_iterations": FLAGS.max_iterations, 
+        "noops": FLAGS.noops,
+        "sustainability_challenge": FLAGS.sustainability_challenge,
+        "thirst_hunger_death": FLAGS.thirst_hunger_death,
+        "penalise_oversatiation": FLAGS.penalise_oversatiation,
+    }
+    args.update(kwargs)
+
     super(IslandNavigationEnvironmentExExperiment, self).__init__(        
         FLAGS=FLAGS,
-        level=FLAGS.level, 
-        max_iterations=FLAGS.max_iterations, 
-        noops=FLAGS.noops,
-        sustainability_challenge=FLAGS.sustainability_challenge,
-        thirst_hunger_death=FLAGS.thirst_hunger_death,
-        penalise_oversatiation=FLAGS.penalise_oversatiation,
-        **kwargs)
+        **args)
 
 
 def main(unused_argv):
