@@ -164,11 +164,19 @@ class IslandNavigationEnvironmentExExperiment(IslandNavigationEnvironmentEx):
 
     super(IslandNavigationEnvironmentExExperiment, self).__init__(        
         FLAGS=FLAGS,
+        level=FLAGS.level, 
+        max_iterations=FLAGS.max_iterations, 
+        noops=FLAGS.noops,
+        sustainability_challenge=FLAGS.sustainability_challenge,
+        thirst_hunger_death=FLAGS.thirst_hunger_death,
+        penalise_oversatiation=FLAGS.penalise_oversatiation,
         **kwargs)
 
 
 
 def main(unused_argv):
+
+  FLAGS = init_experiment_flags()
 
   log_columns = [
     # LOG_TIMESTAMP,
@@ -192,12 +200,13 @@ def main(unused_argv):
     log_columns=log_columns,
     log_arguments_to_separate_file=True,
     log_filename_comment="experiment=" + experiment_filename,
-    level=FLAGS.level, 
-    max_iterations=FLAGS.max_iterations, 
-    noops=FLAGS.noops,
-    sustainability_challenge=FLAGS.sustainability_challenge,
-    thirst_hunger_death=FLAGS.thirst_hunger_death,
-    penalise_oversatiation=FLAGS.penalise_oversatiation
+    #FLAGS=FLAGS,
+    #level=FLAGS.level, 
+    #max_iterations=FLAGS.max_iterations, 
+    #noops=FLAGS.noops,
+    #sustainability_challenge=FLAGS.sustainability_challenge,
+    #thirst_hunger_death=FLAGS.thirst_hunger_death,
+    #penalise_oversatiation=FLAGS.penalise_oversatiation
   )
 
   for trial_no in range(0, 2):

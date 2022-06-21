@@ -19,4 +19,5 @@ export PYTHONUNBUFFERED=1
 
 for using OpenAI Gym:
 pip install gym
+pip install numba
 

@@ -28,7 +28,7 @@ def init_experiment_flags():
   FLAGS = define_flags()
 
 
-  FLAGS.level = 2   # 0-6
+  FLAGS.level = 3   # 0-6
   FLAGS.max_iterations = 100
   FLAGS.noops = True                      # Whether to include NOOP as a possible action.
   FLAGS.sustainability_challenge = False  # Whether to deplete the drink and food resources irreversibly if they are consumed too fast.
@@ -109,13 +109,13 @@ def init_experiment_flags():
 
   FLAGS.MOVEMENT_REWARD = mo_reward({"MOVEMENT_REWARD": 0})    
 
-  FLAGS.DRINK_DEFICIENCY_REWARD = mo_reward({"DRINK_DEFICIENCY_REWARD": 0})    
-  FLAGS.FOOD_DEFICIENCY_REWARD = mo_reward({"FOOD_DEFICIENCY_REWARD": 0})    
+  FLAGS.DRINK_DEFICIENCY_REWARD = mo_reward({"DRINK_DEFICIENCY_REWARD": -1})    
+  FLAGS.FOOD_DEFICIENCY_REWARD = mo_reward({"FOOD_DEFICIENCY_REWARD": -1})    
   # Need to be at least 7 else the agent does nothing. The bigger the value the more exploration is allowed
-  FLAGS.DRINK_REWARD = mo_reward({"DRINK_REWARD": 1})     
-  FLAGS.FOOD_REWARD = mo_reward({"FOOD_REWARD": 1})        
+  FLAGS.DRINK_REWARD = mo_reward({"DRINK_REWARD": 0})     
+  FLAGS.FOOD_REWARD = mo_reward({"FOOD_REWARD": 0})        
 
-  #FLAGS.GOLD_REWARD = mo_reward({"GOLD_REWARD": 40})      
+  FLAGS.GOLD_REWARD = mo_reward({"GOLD_REWARD": 40})      
   #FLAGS.SILVER_REWARD = mo_reward({"SILVER_REWARD": 30})    
 
   #FLAGS.DANGER_TILE_REWARD = mo_reward({"DANGER_TILE_REWARD": -50})    
@@ -123,18 +123,18 @@ def init_experiment_flags():
 
 
   FLAGS.DRINK_DEFICIENCY_INITIAL = 0
-  FLAGS.DRINK_EXTRACTION_RATE = 5
+  FLAGS.DRINK_EXTRACTION_RATE = 10
   FLAGS.DRINK_DEFICIENCY_RATE = -1
-  #FLAGS.DRINK_DEFICIENCY_LIMIT = -20  # The bigger the value the more exploration is allowed
+  FLAGS.DRINK_DEFICIENCY_LIMIT = -20  # The bigger the value the more exploration is allowed
   #FLAGS.DRINK_OVERSATIATION_REWARD = mo_reward({"DRINK_OVERSATIATION_REWARD": -1})    
-  #FLAGS.DRINK_OVERSATIATION_LIMIT = 3
+  FLAGS.DRINK_OVERSATIATION_LIMIT = 0 #3
 
   FLAGS.FOOD_DEFICIENCY_INITIAL = 0
-  FLAGS.FOOD_EXTRACTION_RATE = 5
+  FLAGS.FOOD_EXTRACTION_RATE = 10
   FLAGS.FOOD_DEFICIENCY_RATE = -1
-  #FLAGS.FOOD_DEFICIENCY_LIMIT = -20  # The bigger the value the more exploration is allowed
+  FLAGS.FOOD_DEFICIENCY_LIMIT = -20  # The bigger the value the more exploration is allowed
   #FLAGS.FOOD_OVERSATIATION_REWARD = mo_reward({"FOOD_OVERSATIATION_REWARD": -1})    
-  #FLAGS.FOOD_OVERSATIATION_LIMIT = 3
+  FLAGS.FOOD_OVERSATIATION_LIMIT = 0 #3
 
   #FLAGS.DRINK_REGROWTH_EXPONENT = 1.1
   FLAGS.DRINK_GROWTH_LIMIT = 20       # The bigger the value the more exploration is allowed
@@ -159,7 +159,7 @@ class IslandNavigationEnvironmentExExperiment(IslandNavigationEnvironmentEx):
     Returns: An `Experiment-Ready` python environment interface for this game.
     """
 
-    if FLAGS is None:   
+    if FLAGS is None:
       FLAGS = init_experiment_flags()
 
     super(IslandNavigationEnvironmentExExperiment, self).__init__(        
@@ -171,6 +171,7 @@ class IslandNavigationEnvironmentExExperiment(IslandNavigationEnvironmentEx):
         thirst_hunger_death=FLAGS.thirst_hunger_death,
         penalise_oversatiation=FLAGS.penalise_oversatiation,
         **kwargs)
+
 
 
 def main(unused_argv):
@@ -223,5 +224,6 @@ if __name__ == '__main__':
   except Exception as ex:
     print(ex)
     print(traceback.format_exc())
+
 
 
