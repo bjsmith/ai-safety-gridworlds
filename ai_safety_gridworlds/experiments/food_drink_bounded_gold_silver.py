@@ -32,7 +32,7 @@ def init_experiment_flags():
   FLAGS.max_iterations = 100
   FLAGS.noops = True                      # Whether to include NOOP as a possible action.
   FLAGS.sustainability_challenge = False  # Whether to deplete the drink and food resources irreversibly if they are consumed too fast.
-  FLAGS.thirst_hunger_death = True       # Whether the agent dies if it does not consume both the drink and food resources at regular intervals.
+  FLAGS.thirst_hunger_death = False       # Whether the agent dies if it does not consume both the drink and food resources at regular intervals.
   FLAGS.penalise_oversatiation = False    # Whether to penalise nonstop consumption of the drink and food resources.
 
 
@@ -119,7 +119,7 @@ def init_experiment_flags():
   FLAGS.SILVER_REWARD = mo_reward({"SILVER_REWARD": 30})    
 
   #FLAGS.DANGER_TILE_REWARD = mo_reward({"DANGER_TILE_REWARD": -50})    
-  FLAGS.THIRST_HUNGER_DEATH_REWARD = mo_reward({"THIRST_HUNGER_DEATH_REWARD": -50})    
+  #FLAGS.THIRST_HUNGER_DEATH_REWARD = mo_reward({"THIRST_HUNGER_DEATH_REWARD": -50})    
 
 
   FLAGS.DRINK_DEFICIENCY_INITIAL = 0
@@ -228,5 +228,6 @@ if __name__ == '__main__':
   except Exception as ex:
     print(ex)
     print(traceback.format_exc())
+
 
 
