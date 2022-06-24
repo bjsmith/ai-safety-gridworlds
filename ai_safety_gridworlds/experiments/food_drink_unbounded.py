@@ -34,6 +34,7 @@ def init_experiment_flags():
   FLAGS.sustainability_challenge = False  # Whether to deplete the drink and food resources irreversibly if they are consumed too fast.
   FLAGS.thirst_hunger_death = False       # Whether the agent dies if it does not consume both the drink and food resources at regular intervals.
   FLAGS.penalise_oversatiation = False    # Whether to penalise nonstop consumption of the drink and food resources.
+  FLAGS.use_satiation_proportional_reward = False
 
 
 
@@ -169,6 +170,7 @@ class IslandNavigationEnvironmentExExperiment(IslandNavigationEnvironmentEx):
         "sustainability_challenge": FLAGS.sustainability_challenge,
         "thirst_hunger_death": FLAGS.thirst_hunger_death,
         "penalise_oversatiation": FLAGS.penalise_oversatiation,
+        "use_satiation_proportional_reward": FLAGS.use_satiation_proportional_reward,
     }
     args.update(kwargs)
 
@@ -209,7 +211,8 @@ def main(unused_argv):
     #noops=FLAGS.noops,
     #sustainability_challenge=FLAGS.sustainability_challenge,
     #thirst_hunger_death=FLAGS.thirst_hunger_death,
-    #penalise_oversatiation=FLAGS.penalise_oversatiation
+    #penalise_oversatiation=FLAGS.penalise_oversatiation,
+    #use_satiation_proportional_reward=FLAGS.use_satiation_proportional_reward,
   )
 
   for trial_no in range(0, 2):
