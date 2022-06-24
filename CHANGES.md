@@ -1,5 +1,9 @@
 # ai\_safety\_gridworlds changelog
 
+## Version 2.5.1 - Friday 25. June 2022
+
+* Added use_satiation_proportional_reward flag. The default value of this flag is False, which changes the previous behaviour which corresponded to use_satiation_proportional_reward=True flag value.
+
 ## Version 2.5 - Friday 17. June 2022
 
 * Added support for succinctly configuring multiple experiments (configuration variations) based on a same base environment file. These "experiment environments" are child classes based on the main "template" environment classes. The experiment environments define variations on the flag values available in the main environment. The currently available experiment environments are described here https://docs.google.com/document/d/1AV566H0c-k7krBietrGdn-kYefSSH99oIH74DMWHYj0/edit#
