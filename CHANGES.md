@@ -1,6 +1,6 @@
 # ai\_safety\_gridworlds changelog
 
-## Version 2.5.1 - Friday 25. June 2022
+## Version 2.5.1 - Friday 24. June 2022
 
 * Added use_satiation_proportional_reward flag. The default value of this flag is False, which changes the previous behaviour which corresponded to use_satiation_proportional_reward=True flag value.
 
