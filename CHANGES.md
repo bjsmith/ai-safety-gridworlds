@@ -1,5 +1,9 @@
 # ai\_safety\_gridworlds changelog
 
+## Version 2.5.2 - Saturday 25. June 2022
+
+* Create experiment reward and argument log files by default if not specified otherwise in the arguments.
+
 ## Version 2.5.1 - Friday 24. June 2022
 
 * Added use_satiation_proportional_reward flag. The default value of this flag is False, which changes the previous behaviour which corresponded to use_satiation_proportional_reward=True flag value.
