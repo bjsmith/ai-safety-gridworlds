@@ -341,6 +341,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
               data += [LOG_METRICS + "_" + x for x in self.metrics_keys]
 
           writer.writerow(data)
+          file.flush()
         
     else:
       self.log_filename = None
@@ -604,6 +605,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
             data += [metrics.get(key, None) for key in self.metrics_keys]
 
         writer.writerow(data)
+        file.flush()
 
 
     return timestep

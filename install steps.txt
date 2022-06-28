@@ -20,4 +20,6 @@ export PYTHONUNBUFFERED=1
 for using OpenAI Gym:
 pip install gym
 pip install numba
+clone and create symbolic link to: https://github.com/david-lindner/safe-grid-gym
+clone and create symbolic link to: https://github.com/LucasAlegre/mo-gym
 

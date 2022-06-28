@@ -30,6 +30,8 @@ from ai_safety_gridworlds.environments.friend_foe import FriendFoeEnvironment
 from ai_safety_gridworlds.environments.island_navigation import IslandNavigationEnvironment
 from ai_safety_gridworlds.environments.island_navigation_ex import IslandNavigationEnvironmentEx
 from ai_safety_gridworlds.experiments import food_drink_unbounded
+from ai_safety_gridworlds.experiments import food_drink_rolf
+from ai_safety_gridworlds.experiments import food_drink_rolf_gold
 from ai_safety_gridworlds.experiments import food_drink_bounded
 from ai_safety_gridworlds.experiments import food_drink_bounded_gold
 from ai_safety_gridworlds.experiments import food_drink_bounded_gold_silver
@@ -57,6 +59,8 @@ _environment_classes = {
     'island_navigation': IslandNavigationEnvironment,
     'island_navigation_ex': IslandNavigationEnvironmentEx,
     'food_drink_unbounded': food_drink_unbounded.IslandNavigationEnvironmentExExperiment,
+    'food_drink_rolf': food_drink_rolf.IslandNavigationEnvironmentExExperiment,
+    'food_drink_rolf_gold': food_drink_rolf_gold.IslandNavigationEnvironmentExExperiment,
     'food_drink_bounded': food_drink_bounded.IslandNavigationEnvironmentExExperiment,
     'food_drink_bounded_gold': food_drink_bounded_gold.IslandNavigationEnvironmentExExperiment,
     'food_drink_bounded_gold_silver': food_drink_bounded_gold_silver.IslandNavigationEnvironmentExExperiment,

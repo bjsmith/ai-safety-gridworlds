@@ -1,5 +1,9 @@
 # ai\_safety\_gridworlds changelog
 
+## Version 2.5.3 - Tuesday 28. June 2022
+
+* Added gap tile reward to island navigation ex environment. Added Rolf 2020 experiments.
+
 ## Version 2.5.2 - Saturday 25. June 2022
 
 * Create experiment reward and argument log files by default if not specified otherwise in the arguments.

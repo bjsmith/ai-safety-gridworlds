@@ -112,9 +112,12 @@ def init_experiment_flags():
 
   FLAGS.DRINK_DEFICIENCY_REWARD = mo_reward({"DRINK_DEFICIENCY_REWARD": 0})    
   FLAGS.FOOD_DEFICIENCY_REWARD = mo_reward({"FOOD_DEFICIENCY_REWARD": 0})    
-  # Need to be at least 7 else the agent does nothing. The bigger the value the more exploration is allowed
   FLAGS.DRINK_REWARD = mo_reward({"DRINK_REWARD": 1})     
-  FLAGS.FOOD_REWARD = mo_reward({"FOOD_REWARD": 1})        
+  FLAGS.FOOD_REWARD = mo_reward({"FOOD_REWARD": 1})
+  FLAGS.NON_DRINK_REWARD = mo_reward({"DRINK_REWARD": 0})     
+  FLAGS.NON_FOOD_REWARD = mo_reward({"FOOD_REWARD": 0})          
+
+  FLAGS.GAP_REWARD = mo_reward({"FOOD_REWARD": 0, "DRINK_REWARD": 0})         
 
   #FLAGS.GOLD_REWARD = mo_reward({"GOLD_REWARD": 40})      
   #FLAGS.SILVER_REWARD = mo_reward({"SILVER_REWARD": 30})    
