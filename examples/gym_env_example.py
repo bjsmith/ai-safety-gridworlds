@@ -46,7 +46,7 @@ def gym_env(args):
 def mk_env(args):
     if args.gym_make:
         id_ = "ai_safety_gridworlds-" + args.env_name + "-v0"
-        return gym.make(id_)
+        return gym.make(id_, disable_env_checker=True)  # ADDED: disable_env_checker=True
     else:
         return GridworldGymEnv(env_name=args.env_name, render_animation_delay=args.pause)
 

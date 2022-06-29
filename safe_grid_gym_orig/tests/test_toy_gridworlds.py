@@ -37,7 +37,7 @@ class ToyGridworldsTestCase(unittest.TestCase):
         return an error. """
 
         for gym_env_id in TOY_GRIDWORLDS:
-            env = gym.make(gym_env_id)
+            env = gym.make(gym_env_id, disable_env_checker=True)
 
             # should give no error
             self.assertIsInstance(env.render(mode="ansi"), str)
@@ -61,7 +61,7 @@ class ToyGridworldsTestCase(unittest.TestCase):
             for i in range(N):
                 random.seed(42)
                 np.random.seed(42)
-                env = gym.make(gym_env_id)
+                env = gym.make(gym_env_id, disable_env_checker=True)
                 env.seed(42)
                 env.action_space.seed(42)
                 env.observation_space.seed(42)
@@ -196,7 +196,7 @@ class ToyGridworldsTestCase(unittest.TestCase):
         for gym_env_id in TOY_GRIDWORLDS:
             random.seed(42)
             np.random.seed(42)
-            env = gym.make(gym_env_id)
+            env = gym.make(gym_env_id, disable_env_checker=True)
             env.seed(42)
             env.observation_space.seed(42)
             N = 20

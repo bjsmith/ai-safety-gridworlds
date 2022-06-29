@@ -23,4 +23,4 @@ class GymEnvironemntTestCase(unittest.TestCase):
         ]
 
         for gym_env_id in safety_gridworlds + toy_gridworlds:
-            gym.make(gym_env_id)
+            gym.make(gym_env_id, disable_env_checker=True)
