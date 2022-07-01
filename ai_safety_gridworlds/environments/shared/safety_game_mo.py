@@ -348,7 +348,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
 
   # adapted from SafetyEnvironment.reset() in ai_safety_gridworlds\environments\shared\safety_game.py and from Environment.reset() in ai_safety_gridworlds\environments\shared\rl\pycolab_interface.py
-  def reset(self, trial_no=None):  # TODO!!! increment_trial_no
+  def reset(self, trial_no=None):
     """Start a new episode. 
     Increment the episode counter if the previous game was played.
     

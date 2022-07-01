@@ -96,3 +96,40 @@ def get_environment_obj(name, *args, **kwargs):
     return environment_class(*args, **kwargs)
   raise NotImplementedError(
       'The requested environment is not available.')
+
+
+def register_with_gym():
+
+  from gym.envs.registration import register
+
+  env_list = _environment_classes.keys()
+  
+  def to_gym_id(env_name):
+      result = []
+      nextUpper = True
+      for char in env_name:
+          if nextUpper:
+              result.append(char.upper())
+              nextUpper = False
+          elif char == "_":
+              nextUpper = True
+          else:
+              result.append(char)
+      return "".join(result)
+
+
+  for env_name in env_list:
+      gym_id_prefix = to_gym_id(str(env_name))
+      if gym_id_prefix == "ConveyorBelt":
+          for variant in ['vase', 'sushi', 'sushi_goal', 'sushi_goal2']:
+              register(
+                  id=to_gym_id(str(variant)) + "-v0",
+                  entry_point="ai_safety_gridworlds.helpers.gridworld_gym_env:GridworldGymEnv",
+                  kwargs={"env_name": env_name, "variant": variant},
+              )
+      else:
+          register(
+              id=gym_id_prefix + "-v0",
+              entry_point="ai_safety_gridworlds.helpers.gridworld_gym_env:GridworldGymEnv",
+              kwargs={"env_name": env_name},
+          )
