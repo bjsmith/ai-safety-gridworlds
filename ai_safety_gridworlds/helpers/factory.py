@@ -104,6 +104,8 @@ def register_with_gym():
 
   env_list = _environment_classes.keys()
   
+
+  # adapted from safe_grid_gym\__init__.py
   def to_gym_id(env_name):
       result = []
       nextUpper = True
@@ -117,8 +119,14 @@ def register_with_gym():
               result.append(char)
       return "".join(result)
 
+  # adapted from safe_grid_gym\envs\__init__.py
+  def get_id(env_name):
+      return "ai_safety_gridworlds-" + env_name + "-v0"
+
 
   for env_name in env_list:
+
+      # adapted from safe_grid_gym\__init__.py
       gym_id_prefix = to_gym_id(str(env_name))
       if gym_id_prefix == "ConveyorBelt":
           for variant in ['vase', 'sushi', 'sushi_goal', 'sushi_goal2']:
@@ -133,3 +141,10 @@ def register_with_gym():
               entry_point="ai_safety_gridworlds.helpers.gridworld_gym_env:GridworldGymEnv",
               kwargs={"env_name": env_name},
           )
+
+      # adapted from safe_grid_gym\envs\__init__.py
+      register(
+          id=get_id(env_name),
+          entry_point="ai_safety_gridworlds.helpers.gridworld_gym_env:GridworldGymEnv",
+          kwargs={"env_name": env_name, "pause": 0.2},
+      )

@@ -21,6 +21,7 @@ from __future__ import print_function
 
 import csv
 import datetime
+import decimal
 import os
 
 # Dependency imports
@@ -297,6 +298,8 @@ class SafetyEnvironmentMo(SafetyEnvironment):
             print("}", file=file)
             # TODO: find a way to log reward unit sizes too
 
+            file.flush()
+
 
         with open(os.path.join(self.log_dir, log_filename), 'a', 1024 * 1024, newline='') as file:   # csv writer creates its own newlines therefore need to set newline to empty string here
           writer = csv.writer(file, quoting=csv.QUOTE_NONNUMERIC, delimiter=';')
@@ -562,6 +565,10 @@ class SafetyEnvironmentMo(SafetyEnvironment):
       with open(os.path.join(self.log_dir, log_filename), 'a', 1024 * 1024, newline='') as file:   # csv writer creates its own newlines therefore need to set newline to empty string here
         writer = csv.writer(file, quoting=csv.QUOTE_NONNUMERIC, delimiter=';')
 
+        # prec = 12
+        prec = 10
+        decimal_context = decimal.Context(prec=prec, rounding=decimal.ROUND_HALF_UP, capitals=0)
+
         data = []
         for col in self.log_columns:
 
@@ -589,20 +596,31 @@ class SafetyEnvironmentMo(SafetyEnvironment):
           #  data += self.reward_units
 
           elif col == LOG_REWARD:
-            data += reward_dims
+            data += [_remove_decimal_exponent(decimal_context.create_decimal_from_float(x)) for x in reward_dims]
 
           elif col == LOG_SCALAR_REWARD:
-            data.append(scalar_reward)
+            data.append(_remove_decimal_exponent(decimal_context.create_decimal_from_float(scalar_reward)))
 
           elif col == LOG_CUMULATIVE_REWARD:
-            data += cumulative_reward_dims
+            data += [_remove_decimal_exponent(decimal_context.create_decimal_from_float(x)) for x in cumulative_reward_dims]
 
           elif col == LOG_SCALAR_CUMULATIVE_REWARD:
-            data.append(scalar_cumulative_reward)
+            data.append(_remove_decimal_exponent(decimal_context.create_decimal_from_float(scalar_cumulative_reward)))
 
           elif col == LOG_METRICS:
             metrics = self._environment_data.get(METRICS_DICT, {})
-            data += [metrics.get(key, None) for key in self.metrics_keys]
+            data += [
+                      (
+                        _remove_decimal_exponent(decimal_context.create_decimal_from_float(x))
+                          if x is not None 
+                          else None
+                      )
+                      for x in
+                      [
+                        metrics.get(key, None)
+                        for key in self.metrics_keys
+                      ]
+                    ]
 
         writer.writerow(data)
         file.flush()
@@ -617,4 +635,11 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
   def get_episode_no(self):
     return getattr(self.__class__, "episode_no")
+
+
+
+# https://stackoverflow.com/questions/11227620/drop-trailing-zeros-from-decimal
+def _remove_decimal_exponent(num):
+  integral = num.to_integral()
+  return integral if num == integral else num.normalize()
 
