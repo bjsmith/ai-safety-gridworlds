@@ -1,5 +1,9 @@
 # ai\_safety\_gridworlds changelog
 
+## Version 2.6 - Friday 1. July 2022
+
+* Added register_with_gym() method to factory. This creates registrations for all environments in factory in such a way that are gym compatible, using a GridworldGymEnv wrapper class included under helpers.
+
 ## Version 2.5.3 - Tuesday 28. June 2022
 
 * Added gap tile reward to island navigation ex environment. Added Rolf 2020 experiments.
