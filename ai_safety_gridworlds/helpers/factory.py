@@ -103,7 +103,7 @@ def register_with_gym():
   global register_with_gym_done
 
 
-  if register_with_gym_done:
+  if register_with_gym_done:  # avoid warnings caused by duplicate registrations
     return
   register_with_gym_done = True
 

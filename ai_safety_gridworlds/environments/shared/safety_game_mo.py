@@ -223,19 +223,6 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     self._environment_data[CUMULATIVE_REWARD] = np.array(mo_reward({}).tolist(self.enabled_mo_rewards))
 
 
-    prev_trial_no = getattr(self.__class__, "trial_no", -1)
-    setattr(self.__class__, "trial_no", trial_no)
-
-    if prev_trial_no != trial_no: # if new trial is started then reset the episode_no counter
-      setattr(self.__class__, "episode_no", 1)  # use static attribute so that the value survives re-construction of the environment
-      # use a different random number sequence for each trial
-      # at the same time use deterministic seed numbers so that if the trials are re-run then the results are same
-      np.random.seed(int(trial_no) & 0xFFFFFFFF)  # 0xFFFFFFFF: np.random.seed accepts 32-bit int only
-      # np.random.seed(int(time.time() * 10000000) & 0xFFFFFFFF)  # 0xFFFFFFFF: np.random.seed accepts 32-bit int only
-    
-    if episode_no is not None:
-      setattr(self.__class__, "episode_no", episode_no)  # use static attribute so that the value survives re-construction of the environment
-
 
     # self._init_done = False   # needed in order to skip logging during _compute_observation_spec() call
 
@@ -248,6 +235,49 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
 
     self.metrics_keys = list(self._environment_data.get(METRICS_DICT, {}).keys())
+
+
+
+    prev_trial_no = getattr(self.__class__, "trial_no", -1)
+    setattr(self.__class__, "trial_no", trial_no)
+
+
+    prev_log_filename_comment = getattr(self.__class__, "log_filename_comment", "")
+    setattr(self.__class__, "log_filename_comment", log_filename_comment)
+
+    prev_log_arguments = getattr(self.__class__, "log_arguments", {})
+    setattr(self.__class__, "log_arguments", self.log_arguments)
+
+    prev_flags = getattr(self.__class__, "flags", {})
+    setattr(self.__class__, "flags", self.flags)
+
+    prev_enabled_reward_dimension_keys = getattr(self.__class__, "enabled_reward_dimension_keys", [])
+    setattr(self.__class__, "enabled_reward_dimension_keys", self.enabled_reward_dimension_keys)
+
+    prev_metrics_keys = getattr(self.__class__, "metrics_keys", [])
+    setattr(self.__class__, "metrics_keys", self.metrics_keys)
+
+
+    if (   # detect when a new experiment is started
+      prev_log_filename_comment != log_filename_comment 
+      or prev_log_arguments != self.log_arguments
+      or prev_flags != self.flags
+      or prev_enabled_reward_dimension_keys != self.enabled_reward_dimension_keys
+      or prev_metrics_keys != self.metrics_keys
+    ):
+      prev_trial_no = -1
+
+
+    if prev_trial_no != trial_no: # if new trial is started then reset the episode_no counter
+      setattr(self.__class__, "episode_no", 1)  # use static attribute so that the value survives re-construction of the environment
+      # use a different random number sequence for each trial
+      # at the same time use deterministic seed numbers so that if the trials are re-run then the results are same
+      np.random.seed(int(trial_no) & 0xFFFFFFFF)  # 0xFFFFFFFF: np.random.seed accepts 32-bit int only
+      # np.random.seed(int(time.time() * 10000000) & 0xFFFFFFFF)  # 0xFFFFFFFF: np.random.seed accepts 32-bit int only
+    
+    if episode_no is not None:
+      setattr(self.__class__, "episode_no", episode_no)  # use static attribute so that the value survives re-construction of the environment
+
 
 
     self.log_dir = log_dir
@@ -351,7 +381,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
 
   # adapted from SafetyEnvironment.reset() in ai_safety_gridworlds\environments\shared\safety_game.py and from Environment.reset() in ai_safety_gridworlds\environments\shared\rl\pycolab_interface.py
-  def reset(self, trial_no=None):
+  def reset(self, trial_no=None, start_new_experiment=True):
     """Start a new episode. 
     Increment the episode counter if the previous game was played.
     
@@ -359,7 +389,11 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     """
     # Environment._compute_observation_spec() -> Environment.reset() -> Engine.its_showtime() -> Engine.play() -> Engine._update_and_render() is called straight from the constructor of Environment therefore need to overwrite _the_plot variable here. Overwriting it in SafetyEnvironmentMo.__init__ would be too late
     
-    if trial_no is not None:
+    if start_new_experiment:
+      setattr(self.__class__, "trial_no", None)
+      setattr(self.__class__, "episode_no", None)
+
+    elif trial_no is not None:
       prev_trial_no = getattr(self.__class__, "trial_no")
       if prev_trial_no != trial_no: # if new trial is started then reset the episode_no counter
         setattr(self.__class__, "trial_no", trial_no)
@@ -369,6 +403,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
         # at the same time use deterministic seed numbers so that if the trials are re-run then the results are same
         np.random.seed(int(trial_no) & 0xFFFFFFFF)  # 0xFFFFFFFF: np.random.seed accepts 32-bit int only
         # np.random.seed(int(time.time() * 10000000) & 0xFFFFFFFF)  # 0xFFFFFFFF: np.random.seed accepts 32-bit int only
+
     else:
       episode_no = getattr(self.__class__, "episode_no")
       if self._state != None and self._state != environment.StepType.FIRST:   # increment the episode_no only if the previous game was played, and not upon early or repeated reset() calls
