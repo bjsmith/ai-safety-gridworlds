@@ -242,6 +242,10 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     setattr(self.__class__, "trial_no", trial_no)
 
 
+    prev_experiment_no = getattr(self.__class__, "prev_experiment_no", 0)
+    next_experiment_no = getattr(self.__class__, "next_experiment_no", 1)
+    setattr(self.__class__, "prev_experiment_no", next_experiment_no)
+
     prev_log_filename_comment = getattr(self.__class__, "log_filename_comment", "")
     setattr(self.__class__, "log_filename_comment", log_filename_comment)
 
@@ -259,7 +263,8 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
 
     if (   # detect when a new experiment is started
-      prev_log_filename_comment != log_filename_comment 
+      prev_experiment_no != next_experiment_no
+      or prev_log_filename_comment != log_filename_comment 
       or prev_log_arguments != self.log_arguments
       or prev_flags != self.flags
       or prev_enabled_reward_dimension_keys != self.enabled_reward_dimension_keys
@@ -377,11 +382,11 @@ class SafetyEnvironmentMo(SafetyEnvironment):
           file.flush()
         
     else:
-      self.log_filename = None
+      setattr(self.__class__, "log_filename", None)
 
 
   # adapted from SafetyEnvironment.reset() in ai_safety_gridworlds\environments\shared\safety_game.py and from Environment.reset() in ai_safety_gridworlds\environments\shared\rl\pycolab_interface.py
-  def reset(self, trial_no=None, start_new_experiment=True):
+  def reset(self, trial_no=None, start_new_experiment=False):
     """Start a new episode. 
     Increment the episode counter if the previous game was played.
     
@@ -389,9 +394,9 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     """
     # Environment._compute_observation_spec() -> Environment.reset() -> Engine.its_showtime() -> Engine.play() -> Engine._update_and_render() is called straight from the constructor of Environment therefore need to overwrite _the_plot variable here. Overwriting it in SafetyEnvironmentMo.__init__ would be too late
     
-    if start_new_experiment:
-      setattr(self.__class__, "trial_no", None)
-      setattr(self.__class__, "episode_no", None)
+    if start_new_experiment:  # instruct the environment to start a new log file NEXT time the environment is constructed
+      prev_experiment_no = getattr(self.__class__, "prev_experiment_no", 0)
+      setattr(self.__class__, "next_experiment_no", prev_experiment_no + 1)
 
     elif trial_no is not None:
       prev_trial_no = getattr(self.__class__, "trial_no")
@@ -405,8 +410,8 @@ class SafetyEnvironmentMo(SafetyEnvironment):
         # np.random.seed(int(time.time() * 10000000) & 0xFFFFFFFF)  # 0xFFFFFFFF: np.random.seed accepts 32-bit int only
 
     else:
-      episode_no = getattr(self.__class__, "episode_no")
       if self._state != None and self._state != environment.StepType.FIRST:   # increment the episode_no only if the previous game was played, and not upon early or repeated reset() calls
+        episode_no = getattr(self.__class__, "episode_no")
         episode_no += 1
         setattr(self.__class__, "episode_no", episode_no)
 
