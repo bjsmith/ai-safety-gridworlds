@@ -98,7 +98,15 @@ def get_environment_obj(name, *args, **kwargs):
       'The requested environment is not available.')
 
 
+register_with_gym_done = False
 def register_with_gym():
+  global register_with_gym_done
+
+
+  if register_with_gym_done:
+    return
+  register_with_gym_done = True
+
 
   from gym.envs.registration import register
 
