@@ -232,14 +232,9 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     self._default_reward = mo_reward({})  # TODO: consider default_reward argument's value
 
     # self._init_done = True
+    
+    self.metrics_keys = list(self._environment_data.get(METRICS_DICT, {}).keys())   # NB! METRICS_DICT in _environment_data is populated only after parent class is constructed in super().__init__()
 
-
-    self.metrics_keys = list(self._environment_data.get(METRICS_DICT, {}).keys())
-
-
-
-    prev_trial_no = getattr(self.__class__, "trial_no", -1)
-    setattr(self.__class__, "trial_no", trial_no)
 
 
     prev_experiment_no = getattr(self.__class__, "prev_experiment_no", 0)
@@ -262,6 +257,10 @@ class SafetyEnvironmentMo(SafetyEnvironment):
     setattr(self.__class__, "metrics_keys", self.metrics_keys)
 
 
+
+    prev_trial_no = getattr(self.__class__, "trial_no", -1)
+    setattr(self.__class__, "trial_no", trial_no)
+
     if (   # detect when a new experiment is started
       prev_experiment_no != next_experiment_no
       or prev_log_filename_comment != log_filename_comment 
@@ -270,7 +269,7 @@ class SafetyEnvironmentMo(SafetyEnvironment):
       or prev_enabled_reward_dimension_keys != self.enabled_reward_dimension_keys
       or prev_metrics_keys != self.metrics_keys
     ):
-      prev_trial_no = -1
+      prev_trial_no = -1    # this causes a new log file to be created
 
 
     if prev_trial_no != trial_no: # if new trial is started then reset the episode_no counter
