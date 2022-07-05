@@ -398,7 +398,9 @@ class SafetyEnvironmentMo(SafetyEnvironment):
       prev_experiment_no = getattr(self.__class__, "prev_experiment_no", 0)
       setattr(self.__class__, "next_experiment_no", prev_experiment_no + 1)
 
-    elif trial_no is not None:
+
+    # note: no elif here. env.reset(start_new_experiment=True) should still execute rest of the .reset code just in case.
+    if trial_no is not None:
       prev_trial_no = getattr(self.__class__, "trial_no")
       if prev_trial_no != trial_no: # if new trial is started then reset the episode_no counter
         setattr(self.__class__, "trial_no", trial_no)

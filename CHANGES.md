@@ -1,5 +1,10 @@
 # ai\_safety\_gridworlds changelog
 
+## Version 2.6.1 - Monday 4. July 2022
+
+* Add code to automatically generate a new log file if the environment parameters change. This is helpful when multiple experiments are run in sequence from a Python batch file.
+* Add .reset(start_new_experiment=True) which forces a new log file to be created next time the environment is created - even if the parameters do not change. This is helpful when multiple experiments are run in sequence from a Python batch file.
+
 ## Version 2.6 - Friday 1. July 2022
 
 * Added register_with_gym() method to factory.py. This creates registrations for all environments in factory in such a way that they are gym compatible, using a GridworldGymEnv wrapper class included under helpers.
