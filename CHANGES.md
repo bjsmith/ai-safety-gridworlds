@@ -1,5 +1,9 @@
 # ai\_safety\_gridworlds changelog
 
+## Version 2.6.2 - Tuesday 5. July 2022
+
+* Added .get_reward_unit_space() method.
+
 ## Version 2.6.1 - Monday 4. July 2022
 
 * Add code to automatically generate a new log file if the environment parameters change. This is helpful when multiple experiments are run in sequence from a Python batch file.

@@ -209,6 +209,10 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
     self.enabled_mo_rewards = enabled_mo_rewards
     self.enabled_reward_dimension_keys = mo_reward.get_enabled_reward_dimension_keys(self.enabled_mo_rewards)
+    
+    self.reward_unit_space = mo_reward.get_enabled_reward_unit_space(self.enabled_mo_rewards)
+    self.reward_unit_space[0] = np.array([float(x) for x in self.reward_unit_space[0]]) # min
+    self.reward_unit_space[1] = np.array([float(x) for x in self.reward_unit_space[1]]) # max
 
     self.scalarise = scalarise
 
@@ -668,6 +672,10 @@ class SafetyEnvironmentMo(SafetyEnvironment):
 
 
     return timestep
+
+
+  def get_reward_unit_space(self):
+    return self.reward_unit_space
 
 
   def get_trial_no(self):
